@@ -7,7 +7,9 @@ namespace Trivia
     public class Game
     {
         private int PlayersCount => _players.Count;
-        
+        private bool DidPlayerWin => _purses[_currentPlayer] != 6;
+
+
         private readonly List<string> _players = new List<string>();
 
         private readonly int[] _places = new int[6];
@@ -25,7 +27,7 @@ namespace Trivia
 
         public Game()
         {
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 _popQuestions.AddLast(CreatePopQuestion(i));
                 _scienceQuestions.AddLast(CreateScienceQuestion(i));
@@ -152,7 +154,7 @@ namespace Trivia
                                       + _purses[_currentPlayer]
                                       + " Gold Coins.");
 
-                    var winner = DidPlayerWin();
+                    bool winner = DidPlayerWin;
                     _currentPlayer++;
                     if (_currentPlayer == _players.Count) _currentPlayer = 0;
 
@@ -172,7 +174,7 @@ namespace Trivia
                                   + _purses[_currentPlayer]
                                   + " Gold Coins.");
 
-                var winner = DidPlayerWin();
+                bool winner = DidPlayerWin;
                 _currentPlayer++;
                 if (_currentPlayer == _players.Count) _currentPlayer = 0;
 
@@ -188,12 +190,6 @@ namespace Trivia
 
             _currentPlayer++;
             if (_currentPlayer == _players.Count) _currentPlayer = 0;
-        }
-
-
-        private bool DidPlayerWin()
-        {
-            return _purses[_currentPlayer] != 6;
         }
     }
 }
