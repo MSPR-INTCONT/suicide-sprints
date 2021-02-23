@@ -7,7 +7,8 @@ namespace Tests
 {
     public class UnitTest
     {
-     /*   [Fact]
+        /*
+        [Fact]
         public void Roll_NotInPenaltyBox_Test()
         {
             Game game = new Game(false);
@@ -60,16 +61,45 @@ namespace Tests
         {
             Game game = new Game(false);
         } */
-
-        [Fact]
-        public void isPlayable_Test()
+        public class IsPlayableTests
         {
-            Game game = new Game(false);
-            game.Add(new List<string>()
+            [Fact]
+            public void isPlayable_enough()
             {
-                "Kevin", "Margot", "Rat", "truc", "defef"
-            });
-            Assert.True(game.IsPlayable());
+                // INIT VAR
+                Game game = new Game(false);
+                game.Add(new List<string>()
+                {
+                    "Kevin", "Margot", "Rat", "truc", "defef"
+                });
+                //ASSERT
+                Assert.True(game.IsPlayable());
+            }
+            [Fact]
+            public void isPlayable_tooMuch()
+            {
+                // INIT VAR
+                Game game = new Game(false);
+                game.Add(new List<string>()
+                {
+                    "Kevin", "Margot", "Stéphane", "Tintin", "Nicolas", "Jean", "Michel", "David", "Olivier"
+                });
+                //ASSERT
+                Assert.False(game.IsPlayable());
+            }
+            [Fact]
+            public void isPlayable_notEnough()
+            {
+                // INIT VAR
+                Game game = new Game(false);
+                game.Add(new List<string>()
+                {
+                    "Kevin"
+                });
+                //ASSERT
+                Assert.False(game.IsPlayable());
+            }
         }
     }
+    
 }
