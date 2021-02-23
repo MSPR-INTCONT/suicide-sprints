@@ -148,7 +148,7 @@ namespace Trivia
 
         private void CorrectAnswerText()
         {
-            Console.WriteLine("Answer was corrent!!!!");
+            Console.WriteLine("Answer was correct!!!!");
             Console.WriteLine(_players[_currentPlayerIndex]
                               + " now has "
                               + _purses[_currentPlayerIndex]
