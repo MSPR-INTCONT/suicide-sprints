@@ -25,12 +25,6 @@ namespace Trivia
         {
             for (int i = 0; i < 4; i++)
                 _questionsCategory.Add(new Queue<string>());
-
-            if (useTechnoQuestion)
-            {
-                ReplaceCategory();
-            }
-
             for (int i = 0; i < 50; i++)
             {
                 _questionsCategory[0].Enqueue(CreatePopQuestion(i));
@@ -40,6 +34,7 @@ namespace Trivia
             }
         }
 
+<<<<<<< Updated upstream
         private void ReplaceCategory()
         {
         }
@@ -48,6 +43,8 @@ namespace Trivia
         private static string CreatePopQuestion(int index) => "Pop Question " + index;
         private static string CreateSportsQuestion(int index) => "Sports Question " + index;
         private static string CreateScienceQuestion(int index) => "Science Question " + index;
+=======
+>>>>>>> Stashed changes
 
 /*
         public bool IsPlayable()
