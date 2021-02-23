@@ -32,10 +32,10 @@ namespace Trivia
             }
         }
 
-        private string CreateRockQuestion(int index) =>  "Rock Question " + index;
-        private string CreatePopQuestion(int index) =>  "Pop Question " + index;
-        private string CreateSportsQuestion(int index) =>  "Sports Question " + index;
-        private string CreateScienceQuestion(int index) =>  "Science Question " + index;
+        private string CreateRockQuestion(int index) => "Rock Question " + index;
+        private string CreatePopQuestion(int index) => "Pop Question " + index;
+        private string CreateSportsQuestion(int index) => "Sports Question " + index;
+        private string CreateScienceQuestion(int index) => "Science Question " + index;
 
 /*
         public bool IsPlayable()
@@ -44,22 +44,18 @@ namespace Trivia
         }
 */
 
-        public bool Add(string playerName)
+        public void Add(string playerName)
         {
             _players.Add(playerName);
-            _places[HowManyPlayers()] = 0;
-            _purses[HowManyPlayers()] = 0;
-            _inPenaltyBox[HowManyPlayers()] = false;
+            _places[PlayersCount] = 0;
+            _purses[PlayersCount] = 0;
+            _inPenaltyBox[PlayersCount] = false;
 
             Console.WriteLine(playerName + " was added");
             Console.WriteLine("They are player number " + _players.Count);
-            return true;
         }
 
-        private int HowManyPlayers()
-        {
-            return _players.Count;
-        }
+        private int PlayersCount => _players.Count;
 
         public void Roll(int roll)
         {
@@ -77,8 +73,8 @@ namespace Trivia
                     if (_places[_currentPlayer] > 11) _places[_currentPlayer] = _places[_currentPlayer] - 12;
 
                     Console.WriteLine(_players[_currentPlayer]
-                            + "'s new location is "
-                            + _places[_currentPlayer]);
+                                      + "'s new location is "
+                                      + _places[_currentPlayer]);
                     Console.WriteLine("The category is " + CurrentCategory());
                     AskQuestion();
                 }
@@ -94,8 +90,8 @@ namespace Trivia
                 if (_places[_currentPlayer] > 11) _places[_currentPlayer] = _places[_currentPlayer] - 12;
 
                 Console.WriteLine(_players[_currentPlayer]
-                        + "'s new location is "
-                        + _places[_currentPlayer]);
+                                  + "'s new location is "
+                                  + _places[_currentPlayer]);
                 Console.WriteLine("The category is " + CurrentCategory());
                 AskQuestion();
             }
@@ -108,16 +104,19 @@ namespace Trivia
                 Console.WriteLine(_popQuestions.First());
                 _popQuestions.RemoveFirst();
             }
+
             if (CurrentCategory() == "Science")
             {
                 Console.WriteLine(_scienceQuestions.First());
                 _scienceQuestions.RemoveFirst();
             }
+
             if (CurrentCategory() == "Sports")
             {
                 Console.WriteLine(_sportsQuestions.First());
                 _sportsQuestions.RemoveFirst();
             }
+
             if (CurrentCategory() == "Rock")
             {
                 Console.WriteLine(_rockQuestions.First());
@@ -148,9 +147,9 @@ namespace Trivia
                     Console.WriteLine("Answer was correct!!!!");
                     _purses[_currentPlayer]++;
                     Console.WriteLine(_players[_currentPlayer]
-                            + " now has "
-                            + _purses[_currentPlayer]
-                            + " Gold Coins.");
+                                      + " now has "
+                                      + _purses[_currentPlayer]
+                                      + " Gold Coins.");
 
                     var winner = DidPlayerWin();
                     _currentPlayer++;
@@ -197,5 +196,4 @@ namespace Trivia
             return _purses[_currentPlayer] != 6;
         }
     }
-
 }
