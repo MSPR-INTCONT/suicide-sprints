@@ -26,6 +26,12 @@ namespace Trivia
         {
             for (int i = 0; i < 4; i++)
                 _questionsCategory.Add(new Queue<string>());
+
+            if (useTechnoQuestion)
+            {
+                ReplaceCategory();
+            }
+
             for (int i = 0; i < 50; i++)
             {
                 _questionsCategory[0].Enqueue(CreatePopQuestion(i));
@@ -33,6 +39,10 @@ namespace Trivia
                 _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
                 _questionsCategory[3].Enqueue(CreateRockQuestion(i));
             }
+        }
+
+        private void ReplaceCategory()
+        {
         }
 
         private string CreateRockQuestion(int index) => "Rock Question " + index;
@@ -91,7 +101,7 @@ namespace Trivia
         private void RollWhenInPenaltyBox(int roll)
         {
             _isGettingOutOfPenaltyBox = roll % 2 != 0;
-            if(!_isGettingOutOfPenaltyBox)
+            if (!_isGettingOutOfPenaltyBox)
             {
                 Console.WriteLine(_players[_currentPlayer] + " is not getting out of the penalty box");
                 return;
@@ -107,24 +117,9 @@ namespace Trivia
             if (_places[_currentPlayer] > 11) _places[_currentPlayer] = _places[_currentPlayer] - 12;
         }
 
-        private void AskQuestion()
-        {
-            Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
-        }
+        private void AskQuestion() => Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
 
-        private int CurrentCategory()
-        {
-            if (_places[_currentPlayer] == 0) return 0;
-            if (_places[_currentPlayer] == 4) return 0;
-            if (_places[_currentPlayer] == 8) return 0;
-            if (_places[_currentPlayer] == 1) return 1;
-            if (_places[_currentPlayer] == 5) return 1;
-            if (_places[_currentPlayer] == 9) return 1;
-            if (_places[_currentPlayer] == 2) return 2;
-            if (_places[_currentPlayer] == 6) return 2;
-            if (_places[_currentPlayer] == 10) return 2;
-            return 3;
-        }
+        private int CurrentCategory() => _places[_currentPlayer] % 4;
 
         public bool WasCorrectlyAnswered()
         {
