@@ -9,13 +9,12 @@ namespace Trivia
         private int PlayersCount => _players.Count;
         private bool DidPlayerWin => _purses[_currentPlayer] != 6;
 
-
         private readonly List<string> _players = new List<string>();
 
-        private readonly int[] _places = new int[6];
-        private readonly int[] _purses = new int[6];
+        private readonly List<int> _places = new List<int>();
+        private readonly List<int> _purses = new List<int>();
 
-        private readonly bool[] _inPenaltyBox = new bool[6];
+        private readonly List<bool> _inPenaltyBox = new List<bool>();
 
         private readonly LinkedList<string> _popQuestions = new LinkedList<string>();
         private readonly LinkedList<string> _scienceQuestions = new LinkedList<string>();
@@ -40,23 +39,24 @@ namespace Trivia
         private string CreatePopQuestion(int index) => "Pop Question " + index;
         private string CreateSportsQuestion(int index) => "Sports Question " + index;
         private string CreateScienceQuestion(int index) => "Science Question " + index;
-
-/*
-        public bool IsPlayable()
+        
+         public bool IsPlayable()
+         {
+             int playersCount = _players.Count;
+             return (playersCount >= 2 && playersCount <= 6);
+         }
+         
+        public void Add(List<string> playerNames)
         {
-            return (HowManyPlayers() >= 2);
-        }
-*/
-
-        public void Add(string playerName)
-        {
-            _players.Add(playerName);
-            _places[PlayersCount] = 0;
-            _purses[PlayersCount] = 0;
-            _inPenaltyBox[PlayersCount] = false;
-
-            Console.WriteLine(playerName + " was added");
-            Console.WriteLine("They are player number " + _players.Count);
+            foreach (string player in playerNames)
+            {
+                _places.Insert(PlayersCount,0);
+                _purses.Insert(PlayersCount,0);
+                _inPenaltyBox.Insert(PlayersCount,false);
+                _players.Add(player);
+                Console.WriteLine(player + " was added");
+                Console.WriteLine("They are player number " + _players.Count);
+            }
         }
 
 
