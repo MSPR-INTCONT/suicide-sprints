@@ -24,26 +24,24 @@ namespace Trivia
         {
             for (int i = 0; i < 4; i++)
                 _questionsCategory.Add(new Queue<string>());
-
-            if (useTechnoQuestion)
-            {
-                ReplaceCategory();
-            }
-
             for (int i = 0; i < 50; i++)
             {
                 _questionsCategory[0].Enqueue(CreatePopQuestion(i));
                 _questionsCategory[1].Enqueue(CreateScienceQuestion(i));
                 _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
-                _questionsCategory[3].Enqueue(CreateRockQuestion(i));
+                if (useTechnoQuestion)
+                {
+                    _questionsCategory[3].Enqueue(CreateTechnoQuestion(i));
+                }
+                else
+                {
+                    _questionsCategory[3].Enqueue(CreateRockQuestion(i));
+                }
             }
         }
 
-        private void ReplaceCategory()
-        {
-        }
-
         private string CreateRockQuestion(int index) => "Rock Question " + index;
+        private string CreateTechnoQuestion(int index) => "Techno Question " + index;
         private string CreatePopQuestion(int index) => "Pop Question " + index;
         private string CreateSportsQuestion(int index) => "Sports Question " + index;
         private string CreateScienceQuestion(int index) => "Science Question " + index;
