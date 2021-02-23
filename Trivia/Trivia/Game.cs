@@ -66,8 +66,7 @@ namespace Trivia
 
         public void Roll(int roll)
         {
-            Console.WriteLine(_players[_currentPlayerIndex] + " is the current player");
-            Console.WriteLine("They have rolled a " + roll);
+            StartTurnText(roll);
 
             if (_inPenaltyBox[_currentPlayerIndex])
             {
@@ -83,7 +82,6 @@ namespace Trivia
                 NewQuestionText();
             }
         }
-
 
         private void RollWhenInPenaltyBox(int roll)
         {
@@ -104,36 +102,24 @@ namespace Trivia
             if (_places[_currentPlayerIndex] > 11) _places[_currentPlayerIndex] = _places[_currentPlayerIndex] - 12;
         }
 
-
         private int CurrentCategory() => _places[_currentPlayerIndex] % 4;
 
         public bool WasCorrectlyAnswered()
         {
-            if (_inPenaltyBox[_currentPlayerIndex])
+            if (_inPenaltyBox[_currentPlayerIndex]  && !_isGettingOutOfPenaltyBox)
             {
-                if (_isGettingOutOfPenaltyBox)
-                {
-                    CorrectAnswer();
-                    SelectNextPlayer();
-
-                    return DidPlayerWin;
-                }
-
                 SelectNextPlayer();
+                
                 return true;
             }
 
-            CorrectAnswer();
+            _purses[_currentPlayerIndex]++;
+            
+            CorrectAnswerText();
+
             SelectNextPlayer();
 
             return DidPlayerWin;
-        }
-
-        public void CorrectAnswer()
-        {
-            _purses[_currentPlayerIndex]++;
-
-            CorrectAnswerText();
         }
 
         public void WrongAnswer()
@@ -141,11 +127,21 @@ namespace Trivia
             WrongAnswerText();
 
             _inPenaltyBox[_currentPlayerIndex] = true;
+            
             SelectNextPlayer();
         }
 
         private void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
+        
+        
+        private void StartTurnText(int roll)
+        {
+            Console.WriteLine(_players[_currentPlayerIndex] + " is the current player");
+            Console.WriteLine("They have rolled a " + roll);
+        }
+        
+        
         private void NotGettingOutOfPenalty() =>
             Console.WriteLine(_players[_currentPlayerIndex] + " is not getting out of the penalty box");
 
