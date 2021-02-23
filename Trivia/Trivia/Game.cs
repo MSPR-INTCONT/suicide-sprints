@@ -24,26 +24,24 @@ namespace Trivia
         {
             for (int i = 0; i < 4; i++)
                 _questionsCategory.Add(new Queue<string>());
+
+            List<string> categories = new List<string>
+            {
+                "Pop", "Science", "Sports", useTechnoQuestion ? "Techno" : "Rock"
+            };
+
             for (int i = 0; i < 50; i++)
             {
-                _questionsCategory[0].Enqueue(CreatePopQuestion(i));
-                _questionsCategory[1].Enqueue(CreateScienceQuestion(i));
-                _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
-                _questionsCategory[3].Enqueue(useTechnoQuestion ? CreateTechnoQuestion(i) : CreateRockQuestion(i));
+                _questionsCategory[0].Enqueue(CreateQuestion(i,categories[0]));
+                _questionsCategory[1].Enqueue(CreateQuestion(i,categories[1]));
+                _questionsCategory[2].Enqueue(CreateQuestion(i,categories[2]));
+                _questionsCategory[3].Enqueue(CreateQuestion(i,categories[3]));
             }
         }
 
-        private string CreateRockQuestion(int index) => "Rock Question " + index;
-        private string CreateTechnoQuestion(int index) => "Techno Question " + index;
-        private string CreatePopQuestion(int index) => "Pop Question " + index;
-        private string CreateSportsQuestion(int index) => "Sports Question " + index;
-        private string CreateScienceQuestion(int index) => "Science Question " + index;
+        private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
 
-        public bool IsPlayable()
-        {
-            int playersCount = _players.Count;
-            return (playersCount >= 2 && playersCount <= 6);
-        }
+        public bool IsPlayable() => PlayersCount >= 2 && PlayersCount <= 6;
 
         public void Add(List<string> playerNames)
         {
