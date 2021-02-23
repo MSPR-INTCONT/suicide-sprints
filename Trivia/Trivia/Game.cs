@@ -27,6 +27,10 @@ namespace Trivia
 
         public Game(bool useTechnoQuestion)
         {
+            if (useTechnoQuestion)
+            {
+                ReplaceCategory();
+            }
             for (int i = 0; i < 50; i++)
             {
                 _popQuestions.AddLast(CreatePopQuestion(i));
@@ -34,6 +38,11 @@ namespace Trivia
                 _sportsQuestions.AddLast(CreateSportsQuestion(i));
                 _rockQuestions.AddLast(CreateRockQuestion(i));
             }
+        }
+
+        private void ReplaceCategory()
+        {
+            
         }
 
         private string CreateRockQuestion(int index) => "Rock Question " + index;
