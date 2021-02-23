@@ -9,17 +9,20 @@ namespace Trivia
 
         public static void Main(string[] args)
         {
-            var aGame = new Game(false);
-
+            Console.WriteLine("Techno (y) : ");
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            bool isTechno = keyInfo.Key == ConsoleKey.Y;
+            var aGame = new Game(isTechno);
+            
             aGame.Add(new List<string>()
             {
-                "Cat", "Dog", "Rat", "truc", "defef"
+                "Cat"
             });
 
 
             if (!aGame.IsPlayable())
             {
-                Console.WriteLine("Pas possible");
+                Console.WriteLine("Pas possible de lancer la partie");
                 return;
             }
             
