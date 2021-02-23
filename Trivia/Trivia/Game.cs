@@ -25,7 +25,7 @@ namespace Trivia
         private int _currentPlayer;
         private bool _isGettingOutOfPenaltyBox;
 
-        public Game()
+        public Game(bool useTechnoQuestion)
         {
             for (int i = 0; i < 50; i++)
             {
