@@ -63,7 +63,10 @@ namespace Trivia
                 RollWhenInPenaltyBox(roll);
 
                 if (_isGettingOutOfPenaltyBox)
+                {
+                    _inPenaltyBox[_currentPlayerIndex] = false;
                     NewQuestionText();
+                }
             }
             else
             {
