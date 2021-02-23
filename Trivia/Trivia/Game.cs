@@ -9,12 +9,10 @@ namespace Trivia
         private int PlayersCount => _players.Count;
         private bool DidPlayerWin => _purses[_currentPlayer] != 6;
 
-
         private readonly List<string> _players = new List<string>();
 
         private readonly int[] _places = new int[6];
         private readonly int[] _purses = new int[6];
-
         private readonly bool[] _inPenaltyBox = new bool[6];
 
         private readonly List<Queue<string>> _questionsCategory = new List<Queue<string>>();
@@ -67,7 +65,6 @@ namespace Trivia
             Console.WriteLine(playerName + " was added");
             Console.WriteLine("They are player number " + _players.Count);
         }
-
 
         public void Roll(int roll)
         {
@@ -146,30 +143,28 @@ namespace Trivia
                 return true;
             }
 
-            {
-                Console.WriteLine("Answer was corrent!!!!");
-                _purses[_currentPlayer]++;
-                Console.WriteLine(_players[_currentPlayer]
-                                  + " now has "
-                                  + _purses[_currentPlayer]
-                                  + " Gold Coins.");
+            Console.WriteLine("Answer was corrent!!!!");
+            Console.WriteLine(_players[_currentPlayer]
+                              + " now has "
+                              + _purses[_currentPlayer]
+                              + " Gold Coins.");
+            
+            _purses[_currentPlayer]++;
+            bool winnerb = DidPlayerWin;
+            SelectNextPlayer();
 
-                bool winner = DidPlayerWin;
-                _currentPlayer++;
-                if (_currentPlayer == _players.Count) _currentPlayer = 0;
-
-                return winner;
-            }
+            return winnerb;
         }
 
         public void WrongAnswer()
         {
             Console.WriteLine("Question was incorrectly answered");
             Console.WriteLine(_players[_currentPlayer] + " was sent to the penalty box");
-            _inPenaltyBox[_currentPlayer] = true;
 
-            _currentPlayer++;
-            if (_currentPlayer == _players.Count) _currentPlayer = 0;
+            _inPenaltyBox[_currentPlayer] = true;
+            SelectNextPlayer();
         }
+
+        private void SelectNextPlayer() => _currentPlayer = (_currentPlayer + 1) % _players.Count;
     }
 }
