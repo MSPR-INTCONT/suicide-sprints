@@ -29,14 +29,7 @@ namespace Trivia
                 _questionsCategory[0].Enqueue(CreatePopQuestion(i));
                 _questionsCategory[1].Enqueue(CreateScienceQuestion(i));
                 _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
-                if (useTechnoQuestion)
-                {
-                    _questionsCategory[3].Enqueue(CreateTechnoQuestion(i));
-                }
-                else
-                {
-                    _questionsCategory[3].Enqueue(CreateRockQuestion(i));
-                }
+                _questionsCategory[3].Enqueue(useTechnoQuestion ? CreateTechnoQuestion(i) : CreateRockQuestion(i));
             }
         }
 
