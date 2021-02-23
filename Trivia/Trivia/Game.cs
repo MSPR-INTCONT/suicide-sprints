@@ -7,7 +7,7 @@ namespace Trivia
     public class Game
     {
         private int PlayersCount => _players.Count;
-        private bool DidPlayerWin => _purses[_currentPlayer] != 6;
+        private bool DidPlayerWin => _purses[_currentPlayerIndex] != 6;
 
         private readonly List<string> _players = new List<string>();
 
@@ -17,7 +17,7 @@ namespace Trivia
 
         private readonly List<Queue<string>> _questionsCategory = new List<Queue<string>>();
 
-        private int _currentPlayer;
+        private int _currentPlayerIndex;
         private bool _isGettingOutOfPenaltyBox;
 
         public Game(bool useTechnoQuestion)
@@ -66,103 +66,114 @@ namespace Trivia
 
         public void Roll(int roll)
         {
-            Console.WriteLine(_players[_currentPlayer] + " is the current player");
+            Console.WriteLine(_players[_currentPlayerIndex] + " is the current player");
             Console.WriteLine("They have rolled a " + roll);
 
-            if (_inPenaltyBox[_currentPlayer])
+            if (_inPenaltyBox[_currentPlayerIndex])
             {
                 RollWhenInPenaltyBox(roll);
 
                 if (_isGettingOutOfPenaltyBox)
-                    NewQuestion();
+                    NewQuestionText();
             }
             else
             {
                 RollWhenNotInPenaltyBox(roll);
 
-                NewQuestion();
+                NewQuestionText();
             }
         }
 
-        private void NewQuestion()
-        {
-            Console.WriteLine(_players[_currentPlayer]
-                              + "'s new location is "
-                              + _places[_currentPlayer]);
-            Console.WriteLine("The category is " + CurrentCategory());
-            AskQuestion();
-        }
 
         private void RollWhenInPenaltyBox(int roll)
         {
             _isGettingOutOfPenaltyBox = roll % 2 != 0;
             if (!_isGettingOutOfPenaltyBox)
             {
-                Console.WriteLine(_players[_currentPlayer] + " is not getting out of the penalty box");
+                NotGettingOutOfPenalty();
                 return;
             }
 
-            Console.WriteLine(_players[_currentPlayer] + " is getting out of the penalty box");
+            GettingOutOfPenaltyText();
             RollWhenNotInPenaltyBox(roll);
         }
 
         private void RollWhenNotInPenaltyBox(int roll)
         {
-            _places[_currentPlayer] = _places[_currentPlayer] + roll;
-            if (_places[_currentPlayer] > 11) _places[_currentPlayer] = _places[_currentPlayer] - 12;
+            _places[_currentPlayerIndex] = _places[_currentPlayerIndex] + roll;
+            if (_places[_currentPlayerIndex] > 11) _places[_currentPlayerIndex] = _places[_currentPlayerIndex] - 12;
         }
 
-        private void AskQuestion() => Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
 
-        private int CurrentCategory() => _places[_currentPlayer] % 4;
+        private int CurrentCategory() => _places[_currentPlayerIndex] % 4;
 
         public bool WasCorrectlyAnswered()
         {
-            if (_inPenaltyBox[_currentPlayer])
+            if (_inPenaltyBox[_currentPlayerIndex])
             {
                 if (_isGettingOutOfPenaltyBox)
                 {
-                    Console.WriteLine("Answer was correct!!!!");
-                    _purses[_currentPlayer]++;
-                    Console.WriteLine(_players[_currentPlayer]
-                                      + " now has "
-                                      + _purses[_currentPlayer]
-                                      + " Gold Coins.");
+                    CorrectAnswer();
+                    SelectNextPlayer();
 
-                    bool winner = DidPlayerWin;
-                    _currentPlayer++;
-                    if (_currentPlayer == _players.Count) _currentPlayer = 0;
-
-                    return winner;
+                    return DidPlayerWin;
                 }
 
-                _currentPlayer++;
-                if (_currentPlayer == _players.Count) _currentPlayer = 0;
+                SelectNextPlayer();
                 return true;
             }
 
-            Console.WriteLine("Answer was corrent!!!!");
-            Console.WriteLine(_players[_currentPlayer]
-                              + " now has "
-                              + _purses[_currentPlayer]
-                              + " Gold Coins.");
-            
-            _purses[_currentPlayer]++;
-            bool winnerb = DidPlayerWin;
+            CorrectAnswer();
             SelectNextPlayer();
 
-            return winnerb;
+            return DidPlayerWin;
+        }
+
+        public void CorrectAnswer()
+        {
+            _purses[_currentPlayerIndex]++;
+
+            CorrectAnswerText();
         }
 
         public void WrongAnswer()
         {
-            Console.WriteLine("Question was incorrectly answered");
-            Console.WriteLine(_players[_currentPlayer] + " was sent to the penalty box");
+            WrongAnswerText();
 
-            _inPenaltyBox[_currentPlayer] = true;
+            _inPenaltyBox[_currentPlayerIndex] = true;
             SelectNextPlayer();
         }
 
-        private void SelectNextPlayer() => _currentPlayer = (_currentPlayer + 1) % _players.Count;
+        private void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+
+        private void NotGettingOutOfPenalty() =>
+            Console.WriteLine(_players[_currentPlayerIndex] + " is not getting out of the penalty box");
+
+        private void GettingOutOfPenaltyText() =>
+            Console.WriteLine(_players[_currentPlayerIndex] + " is getting out of the penalty box");
+
+        private void NewQuestionText()
+        {
+            Console.WriteLine(_players[_currentPlayerIndex]
+                              + "'s new location is "
+                              + _places[_currentPlayerIndex]);
+            Console.WriteLine("The category is " + CurrentCategory());
+            Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
+        }
+
+        private void CorrectAnswerText()
+        {
+            Console.WriteLine("Answer was corrent!!!!");
+            Console.WriteLine(_players[_currentPlayerIndex]
+                              + " now has "
+                              + _purses[_currentPlayerIndex]
+                              + " Gold Coins.");
+        }
+
+        private void WrongAnswerText()
+        {
+            Console.WriteLine("Question was incorrectly answered");
+            Console.WriteLine(_players[_currentPlayerIndex] + " was sent to the penalty box");
+        }
     }
 }
