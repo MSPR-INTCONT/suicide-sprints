@@ -28,19 +28,16 @@ namespace Trivia
                 _popQuestions.AddLast("Pop Question " + i);
                 _scienceQuestions.AddLast(("Science Question " + i));
                 _sportsQuestions.AddLast(("Sports Question " + i));
-                _rockQuestions.AddLast(CreateRockQuestion(i));
+                _rockQuestions.AddLast(("Rock Question" + i));
             }
         }
 
-        public string CreateRockQuestion(int index)
-        {
-            return "Rock Question " + index;
-        }
-
+/*
         public bool IsPlayable()
         {
             return (HowManyPlayers() >= 2);
         }
+*/
 
         public bool Add(string playerName)
         {
@@ -54,7 +51,7 @@ namespace Trivia
             return true;
         }
 
-        public int HowManyPlayers()
+        private int HowManyPlayers()
         {
             return _players.Count;
         }
@@ -192,7 +189,7 @@ namespace Trivia
 
         private bool DidPlayerWin()
         {
-            return !(_purses[_currentPlayer] == 6);
+            return _purses[_currentPlayer] != 6;
         }
     }
 
