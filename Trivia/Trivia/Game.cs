@@ -9,6 +9,7 @@ namespace Trivia
         private int PlayersCount => _players.Count;
         private bool DidPlayerWin => _purses[_currentPlayer] != 6;
 
+
         private readonly List<string> _players = new List<string>();
 
         private readonly int[] _places = new int[6];
@@ -30,21 +31,22 @@ namespace Trivia
                 _questionsCategory[0].Enqueue(CreatePopQuestion(i));
                 _questionsCategory[1].Enqueue(CreateScienceQuestion(i));
                 _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
-                _questionsCategory[3].Enqueue(CreateRockQuestion(i));
+                if (useTechnoQuestion)
+                {
+                    _questionsCategory[3].Enqueue(CreateTechnoQuestion(i));
+                }
+                else
+                {
+                    _questionsCategory[3].Enqueue(CreateRockQuestion(i));
+                }
             }
         }
 
-<<<<<<< Updated upstream
-        private void ReplaceCategory()
-        {
-        }
-
-        private static string CreateRockQuestion(int index) => "Rock Question " + index;
-        private static string CreatePopQuestion(int index) => "Pop Question " + index;
-        private static string CreateSportsQuestion(int index) => "Sports Question " + index;
-        private static string CreateScienceQuestion(int index) => "Science Question " + index;
-=======
->>>>>>> Stashed changes
+        private string CreateRockQuestion(int index) => "Rock Question " + index;
+        private string CreateTechnoQuestion(int index) => "Techno Question " + index;
+        private string CreatePopQuestion(int index) => "Pop Question " + index;
+        private string CreateSportsQuestion(int index) => "Sports Question " + index;
+        private string CreateScienceQuestion(int index) => "Science Question " + index;
 
 /*
         public bool IsPlayable()
@@ -143,7 +145,7 @@ namespace Trivia
             }
 
             {
-                Console.WriteLine("Answer was correct!!!!");
+                Console.WriteLine("Answer was corrent!!!!");
                 _purses[_currentPlayer]++;
                 Console.WriteLine(_players[_currentPlayer]
                                   + " now has "
