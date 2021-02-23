@@ -6,6 +6,8 @@ namespace Trivia
 {
     public class Game
     {
+        private int PlayersCount => _players.Count;
+        
         private readonly List<string> _players = new List<string>();
 
         private readonly int[] _places = new int[6];
@@ -55,7 +57,6 @@ namespace Trivia
             Console.WriteLine("They are player number " + _players.Count);
         }
 
-        private int PlayersCount => _players.Count;
 
         public void Roll(int roll)
         {
@@ -179,7 +180,7 @@ namespace Trivia
             }
         }
 
-        public bool WrongAnswer()
+        public void WrongAnswer()
         {
             Console.WriteLine("Question was incorrectly answered");
             Console.WriteLine(_players[_currentPlayer] + " was sent to the penalty box");
@@ -187,7 +188,6 @@ namespace Trivia
 
             _currentPlayer++;
             if (_currentPlayer == _players.Count) _currentPlayer = 0;
-            return true;
         }
 
 

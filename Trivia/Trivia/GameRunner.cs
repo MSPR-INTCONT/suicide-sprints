@@ -22,7 +22,8 @@ namespace Trivia
 
                 if (rand.Next(9) == 7)
                 {
-                    _notAWinner = aGame.WrongAnswer();
+                    aGame.WrongAnswer();
+                    _notAWinner = true;
                 }
                 else
                 {
