@@ -9,7 +9,6 @@ namespace Trivia
         private int PlayersCount => _players.Count;
         private bool DidPlayerWin => _purses[_currentPlayer] != 6;
 
-
         private readonly List<string> _players = new List<string>();
 
         private readonly int[] _places = new int[6];
@@ -45,10 +44,10 @@ namespace Trivia
         {
         }
 
-        private string CreateRockQuestion(int index) => "Rock Question " + index;
-        private string CreatePopQuestion(int index) => "Pop Question " + index;
-        private string CreateSportsQuestion(int index) => "Sports Question " + index;
-        private string CreateScienceQuestion(int index) => "Science Question " + index;
+        private static string CreateRockQuestion(int index) => "Rock Question " + index;
+        private static string CreatePopQuestion(int index) => "Pop Question " + index;
+        private static string CreateSportsQuestion(int index) => "Sports Question " + index;
+        private static string CreateScienceQuestion(int index) => "Science Question " + index;
 
 /*
         public bool IsPlayable()
@@ -147,7 +146,7 @@ namespace Trivia
             }
 
             {
-                Console.WriteLine("Answer was corrent!!!!");
+                Console.WriteLine("Answer was correct!!!!");
                 _purses[_currentPlayer]++;
                 Console.WriteLine(_players[_currentPlayer]
                                   + " now has "
