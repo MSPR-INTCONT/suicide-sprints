@@ -17,22 +17,21 @@ namespace Trivia
 
         private readonly bool[] _inPenaltyBox = new bool[6];
 
-        private readonly LinkedList<string> _popQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _scienceQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _sportsQuestions = new LinkedList<string>();
-        private readonly LinkedList<string> _rockQuestions = new LinkedList<string>();
+        private readonly List<Queue<string>> _questionsCategory = new List<Queue<string>>();
 
         private int _currentPlayer;
         private bool _isGettingOutOfPenaltyBox;
 
         public Game(bool useTechnoQuestion)
         {
+            for (int i = 0; i < 4; i++)
+                _questionsCategory.Add(new Queue<string>());
             for (int i = 0; i < 50; i++)
             {
-                _popQuestions.AddLast(CreatePopQuestion(i));
-                _scienceQuestions.AddLast(CreateScienceQuestion(i));
-                _sportsQuestions.AddLast(CreateSportsQuestion(i));
-                _rockQuestions.AddLast(CreateRockQuestion(i));
+                _questionsCategory[0].Enqueue(CreatePopQuestion(i));
+                _questionsCategory[1].Enqueue(CreateScienceQuestion(i));
+                _questionsCategory[2].Enqueue(CreateSportsQuestion(i));
+                _questionsCategory[3].Enqueue(CreateRockQuestion(i));
             }
         }
 
@@ -110,43 +109,21 @@ namespace Trivia
 
         private void AskQuestion()
         {
-            if (CurrentCategory() == "Pop")
-            {
-                Console.WriteLine(_popQuestions.First());
-                _popQuestions.RemoveFirst();
-            }
-
-            if (CurrentCategory() == "Science")
-            {
-                Console.WriteLine(_scienceQuestions.First());
-                _scienceQuestions.RemoveFirst();
-            }
-
-            if (CurrentCategory() == "Sports")
-            {
-                Console.WriteLine(_sportsQuestions.First());
-                _sportsQuestions.RemoveFirst();
-            }
-
-            if (CurrentCategory() == "Rock")
-            {
-                Console.WriteLine(_rockQuestions.First());
-                _rockQuestions.RemoveFirst();
-            }
+            Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
         }
 
-        private string CurrentCategory()
+        private int CurrentCategory()
         {
-            if (_places[_currentPlayer] == 0) return "Pop";
-            if (_places[_currentPlayer] == 4) return "Pop";
-            if (_places[_currentPlayer] == 8) return "Pop";
-            if (_places[_currentPlayer] == 1) return "Science";
-            if (_places[_currentPlayer] == 5) return "Science";
-            if (_places[_currentPlayer] == 9) return "Science";
-            if (_places[_currentPlayer] == 2) return "Sports";
-            if (_places[_currentPlayer] == 6) return "Sports";
-            if (_places[_currentPlayer] == 10) return "Sports";
-            return "Rock";
+            if (_places[_currentPlayer] == 0) return 0;
+            if (_places[_currentPlayer] == 4) return 0;
+            if (_places[_currentPlayer] == 8) return 0;
+            if (_places[_currentPlayer] == 1) return 1;
+            if (_places[_currentPlayer] == 5) return 1;
+            if (_places[_currentPlayer] == 9) return 1;
+            if (_places[_currentPlayer] == 2) return 2;
+            if (_places[_currentPlayer] == 6) return 2;
+            if (_places[_currentPlayer] == 10) return 2;
+            return 3;
         }
 
         public bool WasCorrectlyAnswered()
