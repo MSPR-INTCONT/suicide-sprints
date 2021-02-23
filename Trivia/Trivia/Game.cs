@@ -14,7 +14,7 @@ namespace Trivia
         private readonly List<int> _places = new List<int>();
         private readonly List<int> _purses = new List<int>();
         private readonly List<bool> _inPenaltyBox = new List<bool>();
-
+    
         private readonly List<Queue<string>> _questionsCategory = new List<Queue<string>>();
 
         private int _currentPlayerIndex;

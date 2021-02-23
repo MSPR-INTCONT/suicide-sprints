@@ -7,14 +7,15 @@ namespace Trivia
     {
         public static void Main(string[] args)
         {
+
             Console.WriteLine("Techno (y) : ");
             ConsoleKeyInfo keyInfo = Console.ReadKey();
             bool isTechno = keyInfo.Key == ConsoleKey.Y;
+            
             var aGame = new Game(isTechno);
-
             aGame.Add(new List<string>
             {
-                "Cat"
+                "Cat", "Test"
             });
 
 
