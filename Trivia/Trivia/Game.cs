@@ -156,21 +156,19 @@ namespace Trivia
 
                     return winner;
                 }
-                else
-                {
-                    _currentPlayer++;
-                    if (_currentPlayer == _players.Count) _currentPlayer = 0;
-                    return true;
-                }
+
+                _currentPlayer++;
+                if (_currentPlayer == _players.Count) _currentPlayer = 0;
+                return true;
             }
-            else
+
             {
                 Console.WriteLine("Answer was corrent!!!!");
                 _purses[_currentPlayer]++;
                 Console.WriteLine(_players[_currentPlayer]
-                        + " now has "
-                        + _purses[_currentPlayer]
-                        + " Gold Coins.");
+                                  + " now has "
+                                  + _purses[_currentPlayer]
+                                  + " Gold Coins.");
 
                 var winner = DidPlayerWin();
                 _currentPlayer++;
