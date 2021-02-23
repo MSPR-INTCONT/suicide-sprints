@@ -7,7 +7,7 @@ namespace Trivia
     public class Game
     {
         private int PlayersCount => _players.Count;
-        private bool DidPlayerWin => _purses[_currentPlayerIndex] == 6;
+        public bool DidPlayerWin => _purses[_currentPlayerIndex] == 6;
 
         private readonly List<string> _players = new List<string>();
 
@@ -22,14 +22,13 @@ namespace Trivia
 
         public Game(bool useTechnoQuestion)
         {
-            for (int i = 0; i < 4; i++)
-                _questionsCategory.Add(new Queue<string>());
-
             List<string> categories = new List<string>
             {
                 "Pop", "Science", "Sports", useTechnoQuestion ? "Techno" : "Rock"
             };
-
+            
+            for (int i = 0; i < 4; i++)
+                _questionsCategory.Add(new Queue<string>());
             for (int i = 0; i < 50; i++)
             {
                 _questionsCategory[0].Enqueue(CreateQuestion(i,categories[0]));
@@ -51,8 +50,7 @@ namespace Trivia
                 _purses.Insert(PlayersCount, 0);
                 _inPenaltyBox.Insert(PlayersCount, false);
                 _players.Add(player);
-                Console.WriteLine(player + " was added");
-                Console.WriteLine("They are player number " + _players.Count);
+                NewPlayerAddedText(player);
             }
         }
 
@@ -96,22 +94,15 @@ namespace Trivia
 
         private int CurrentCategory() => _places[_currentPlayerIndex] % 4;
 
-        public bool WasCorrectlyAnswered()
+        public void CorrectAnswer()
         {
-            if (_inPenaltyBox[_currentPlayerIndex] && !_isGettingOutOfPenaltyBox)
+            if (!_inPenaltyBox[_currentPlayerIndex] || _isGettingOutOfPenaltyBox)
             {
-                SelectNextPlayer();
-
-                return true;
+                _purses[_currentPlayerIndex]++;
+                CorrectAnswerText();
             }
 
-            _purses[_currentPlayerIndex]++;
-
-            CorrectAnswerText();
-
             SelectNextPlayer();
-
-            return !DidPlayerWin;
         }
 
         public void WrongAnswer()
@@ -125,13 +116,17 @@ namespace Trivia
 
         private void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
+        private void NewPlayerAddedText(string player)
+        {
+            Console.WriteLine(player + " was added");
+            Console.WriteLine("They are player number " + _players.Count);
+        }
 
         private void StartTurnText(int roll)
         {
             Console.WriteLine(_players[_currentPlayerIndex] + " is the current player");
             Console.WriteLine("They have rolled a " + roll);
         }
-
 
         private void NotGettingOutOfPenalty() =>
             Console.WriteLine(_players[_currentPlayerIndex] + " is not getting out of the penalty box");
