@@ -9,7 +9,7 @@ namespace Trivia
 
         public static void Main(string[] args)
         {
-            var aGame = new Game();
+            var aGame = new Game(false);
 
             aGame.Add(new List<string>()
             {
