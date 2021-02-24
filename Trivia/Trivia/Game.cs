@@ -134,46 +134,29 @@ namespace Trivia
 
         private void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
-        private void NewPlayerAddedText(string player)
-        {
-            Console.WriteLine(player + " was added");
-            Console.WriteLine("They are player number " + _players.Count);
-        }
+        private void NewPlayerAddedText(string player) =>
+            Console.WriteLine($"{player} was added\r\n" +
+                              $"They are player number {PlayersCount}");
 
-        private void StartTurnText(int roll)
-        {
-            Console.WriteLine(_players[_currentPlayerIndex] + " is the current player");
-            Console.WriteLine("They have rolled a " + roll);
-        }
+        private void StartTurnText() =>
+            Console.WriteLine($"{CurrentPlayer} is the current player");
 
-        private void NotGettingOutOfPenalty() =>
-            Console.WriteLine(_players[_currentPlayerIndex] + " is not getting out of the penalty box");
+        private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
 
-        private void GettingOutOfPenaltyText() =>
-            Console.WriteLine(_players[_currentPlayerIndex] + " is getting out of the penalty box");
+        private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
+            Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
 
-        private void NewQuestionText()
-        {
-            Console.WriteLine(_players[_currentPlayerIndex]
-                              + "'s new location is "
-                              + _places[_currentPlayerIndex]);
-            Console.WriteLine("The category is " + CurrentCategory());
-            Console.WriteLine(_questionsCategory[CurrentCategory()].Dequeue());
-        }
+        private void NewQuestionText() =>
+            Console.WriteLine($"{CurrentPlayer}'s new location is {CurrentPlayer.Place}\r\n" +
+                              $"The category is {CurrentCategoryName}\r\n" +
+                              $"{CurrentCategoryQueue.Dequeue()}");
 
-        private void CorrectAnswerText()
-        {
-            Console.WriteLine("Answer was correct!!!!");
-            Console.WriteLine(_players[_currentPlayerIndex]
-                              + " now has "
-                              + _purses[_currentPlayerIndex]
-                              + " Gold Coins.");
-        }
+        private void CorrectAnswerText() =>
+            Console.WriteLine("Answer was correct!!!!\r\n" +
+                              $"{CurrentPlayer} now has {CurrentPlayer.Coins} Gold Coins.");
 
-        private void WrongAnswerText()
-        {
-            Console.WriteLine("Question was incorrectly answered");
-            Console.WriteLine(_players[_currentPlayerIndex] + " was sent to the penalty box");
-        }
+        private void WrongAnswerText() =>
+            Console.WriteLine("Question was incorrectly answered\r\n" +
+                              $"{CurrentPlayer} was sent to the penalty box");
     }
 }
