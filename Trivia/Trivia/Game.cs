@@ -205,7 +205,7 @@ namespace Trivia
 
         private void ChancesOfGettingOutOfPenaltyText(float chancesOfGettingOut) =>
             Console.WriteLine(
-                $"Current chances of getting out of prison are {chancesOfGettingOut}%");
+                $"Current chances of getting out of prison are {chancesOfGettingOut*100}%");
 
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
