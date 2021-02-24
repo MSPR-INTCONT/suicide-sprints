@@ -19,8 +19,7 @@ namespace Trivia
             bool newGame = false;
             do
             {
-                Game aGame = new Game(configGame);
-                aGame.Add(players);
+                Game aGame = new Game(players, configGame);
 
                 if (!aGame.IsPlayable())
                 {
@@ -40,7 +39,7 @@ namespace Trivia
                     else if (!aGame.IsPlayable())
                     {
                         Console.WriteLine("Game Can't be played anymore");
-                        return;
+                        break;
                     }
 
                     aGame.SelectNextPlayer();
@@ -48,11 +47,13 @@ namespace Trivia
 
                 aGame.DisplayLeaderboard();
 
+                Console.WriteLine("\n\n");
                 InputUtilities.AskQuestion("Do you want to play a new game ?", new Dictionary<string, Action>
                 {
                     {"yes", () => newGame = true},
                     {"no", () => newGame = false}
                 });
+                Console.WriteLine("\n\n");
             } while (newGame);
         }
     }
