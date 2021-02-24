@@ -32,5 +32,20 @@ namespace Trivia
 
             trueAction();
         }
+
+        public static string AskChoices(string question, List<string> choices)
+        {
+            string answerConcat = String.Empty;
+            foreach (string choice in choices)
+                answerConcat += $" ({choice})";
+            string answer;
+            do
+            {
+                Console.WriteLine($"Questions : {question}\r\nAccepted Answers :{answerConcat}");
+                answer = Console.ReadLine();
+            } while (answer is null || !choices.Contains(answer));
+
+            return answer;
+        }
     }
 }
