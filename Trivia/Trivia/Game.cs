@@ -7,9 +7,9 @@ namespace Trivia
      public class Game
     {
         private int PlayersCount => _players.Count;
-        private Player CurrentPlayer => _players[_currentPlayerIndex];
+        public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
-        private string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
+        public string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
         public bool HaveAWinner => _players.Exists(player => player.Coins == 6);
 
         private readonly List<string> _categories;
@@ -70,7 +70,7 @@ namespace Trivia
             return true;
         }
 
-        private void Roll(int roll)
+        public void Roll(int roll)
         {
             RollText(roll);
             CurrentPlayer.Place = (CurrentPlayer.Place + roll) % 12;
@@ -124,6 +124,29 @@ namespace Trivia
             WrongAnswerText();
         }
 
+
+        public void Run()
+        {
+            Random rand = new Random();
+            do
+            {
+                StartTurn();
+                if (!AskIfPlayerWantToLeaveGame())
+                {
+                    TryRoll(rand.Next(5) + 1);
+                    if (AskForJokerUse())
+                        InputUtilities.AskSuccess(rand.Next(9) == 7, CorrectAnswer, WrongAnswer);
+                }
+                else if (!IsPlayable())
+                {
+                    Console.WriteLine("Game Can't be played anymore");
+                    return;
+                }
+
+                SelectNextPlayer();
+            } while (!HaveAWinner);
+        }
+        
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
         private void NewPlayerAddedText(string player) =>

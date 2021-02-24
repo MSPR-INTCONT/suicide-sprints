@@ -27,25 +27,7 @@ namespace Trivia
                 return;
             }
 
-            Random rand = new Random();
-
-            do
-            {
-                aGame.StartTurn();
-                if (!aGame.AskIfPlayerWantToLeaveGame())
-                {
-                    aGame.TryRoll(rand.Next(5) + 1);
-                    if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(rand.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
-                }
-                else if (!aGame.IsPlayable())
-                {
-                    Console.WriteLine("Game Can't be played anymore");
-                    return;
-                }
-
-                aGame.SelectNextPlayer();
-            } while (!aGame.HaveAWinner);
+            aGame.Run();
         }
     }
 }
