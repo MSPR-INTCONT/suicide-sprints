@@ -58,23 +58,30 @@ namespace Trivia
         {
             StartTurnText(roll);
 
-            if (_inPenaltyBox[_currentPlayerIndex])
-            {
-                RollWhenInPenaltyBox(roll);
-
-                if (_isGettingOutOfPenaltyBox)
-                {
-                    _inPenaltyBox[_currentPlayerIndex] = false;
-                    NewQuestionText();
-                }
-            }
-            else
-            {
-                RollWhenNotInPenaltyBox(roll);
-
-                NewQuestionText();
-            }
+        public void TryRoll(int roll)
+        {
+            if (!CanPlay(roll)) return;
+            Roll(roll);
+            NewQuestionText();
         }
+
+        private bool CanPlay(int roll)
+        {
+            if (CurrentPlayer.InPenaltyBox)
+            {
+                CurrentPlayer.InPenaltyBox = roll % 2 == 0;
+                GettingOutOfPenaltyText(CurrentPlayer.InPenaltyBox);
+                return !CurrentPlayer.InPenaltyBox;
+            }
+
+            return true;
+        }
+
+        private void Roll(int roll)
+        {
+            RollText(roll);
+            CurrentPlayer.Place = (CurrentPlayer.Place + roll) % 12;
+        } 
 
         public bool AskIfPlayerWantToLeaveGame()
         {
