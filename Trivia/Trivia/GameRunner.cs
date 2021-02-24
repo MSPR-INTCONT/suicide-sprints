@@ -38,7 +38,7 @@ namespace Trivia
 
             do
             {
-                aGame.StartTurn();
+                aGame.StartTurnText();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
                     aGame.TryRoll(DiceRoll());
