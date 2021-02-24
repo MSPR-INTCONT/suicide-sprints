@@ -43,7 +43,7 @@ namespace Trivia
             {
                 Console.WriteLine($"Question : {question}\r\nAccepted Answers : (<={maxValue})");
                 answer = Console.ReadLine();
-            } while (answer is null || !(Int32.TryParse(answer, out  result) && result <= maxValue && result > 0));
+            } while (answer is null || !(Int32.TryParse(answer, out  result) && result <= maxValue && result >= 0));
 
             return result;
         }
