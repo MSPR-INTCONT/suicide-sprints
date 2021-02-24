@@ -12,7 +12,9 @@ namespace Trivia
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
 
         public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool IsGameOver => _players.Exists(player => player.Coins == _coinsToWin);
+        public bool IsGameOver => _leaderboard.Count >= 3 || !IsPlayable();
+
+        public bool HasCurrentPlayerFinished => CurrentPlayer.Coins >= _coinsToWin;
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -111,6 +113,7 @@ namespace Trivia
                     {
                         quitGame = true;
                         _players.Remove(CurrentPlayer);
+                        SelectPreviousPlayer();
                     }
                 },
                 {"no", null}
@@ -148,6 +151,21 @@ namespace Trivia
             CurrentPlayer.WinStreak++;
             
             CorrectAnswerText();
+            if (HasCurrentPlayerFinished)
+            {
+                WonText();
+                _leaderboard.Add(CurrentPlayer);
+                _players.Remove(CurrentPlayer);
+                SelectPreviousPlayer();
+                if (!IsPlayable())
+                {
+                    foreach (Player player in _players.OrderBy(player => player.Coins))
+                    {
+                        if (_leaderboard.Count >= 3) break;
+                        _leaderboard.Add(player);
+                    }
+                }
+            }
         }
 
         public void WrongAnswer()
@@ -161,10 +179,30 @@ namespace Trivia
 
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
+        public void SelectPreviousPlayer()
+        {
+            _currentPlayerIndex--;
+            if (_currentPlayerIndex < 0)
+                _currentPlayerIndex = _players.Count - 1;
+        }
+
+
+        public void DisplayLeaderboard()    {
+            Console.WriteLine("\n\nLeaderboard :\n\n");
+            int i = 0;
+            foreach (Player leader in _leaderboard)
+            {
+                Console.WriteLine($"{i + 1} : {leader}");
+                i++;
+            }
+        }
+        
         private void NewPlayerAddedText(string player) =>
             Console.WriteLine($"{player} was added\r\n" +
                               $"They are player number {PlayersCount}");
 
+        private void WonText() => Console.WriteLine($"{CurrentPlayer} is now in leaderboard");
+        
         private void StartTurnText() =>
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 

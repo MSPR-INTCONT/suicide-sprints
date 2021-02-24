@@ -43,7 +43,7 @@ namespace Trivia
                 {
                     aGame.TryRoll(DiceRoll());
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(true, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        InputUtilities.AskSuccess(rng.NextDouble() > .5f, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
                 else if (!aGame.IsPlayable())
                 {
@@ -53,6 +53,8 @@ namespace Trivia
 
                 aGame.SelectNextPlayer();
             } while (!aGame.IsGameOver);
+
+            aGame.DisplayLeaderboard();
         }
     }
 }
