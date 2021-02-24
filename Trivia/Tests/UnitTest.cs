@@ -67,7 +67,7 @@ namespace Tests
             public void isPlayable_enough()
             {
                 // INIT VAR
-                Game game = new Game(false);
+                Game game = new Game(false, new Random());
                 game.Add(new List<string>()
                 {
                     "Kevin", "Margot", "Rat", "truc", "defef"
@@ -79,7 +79,7 @@ namespace Tests
             public void isPlayable_tooMuch()
             {
                 // INIT VAR
-                Game game = new Game(false);
+                Game game = new Game(false, new Random());
                 game.Add(new List<string>()
                 {
                     "Kevin", "Margot", "Stéphane", "Tintin", "Nicolas", "Jean", "Michel", "David", "Olivier"
@@ -91,7 +91,7 @@ namespace Tests
             public void isPlayable_notEnough()
             {
                 // INIT VAR
-                Game game = new Game(false);
+                Game game = new Game(false, new Random());
                 game.Add(new List<string>()
                 {
                     "Kevin"

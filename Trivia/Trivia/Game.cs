@@ -10,8 +10,9 @@ namespace Trivia
 
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
+
         public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
+        public bool IsGameOver => _players.Exists(player => player.Coins == _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -19,9 +20,24 @@ namespace Trivia
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
         private int _coinsToWin;
-        
-        public Game(bool useTechnoQuestion)
+
+        private readonly Random _rng;
+        private readonly List<Player> _leaderboard = new List<Player>();
+
+        private int _questionIndex;
+
+        private int QuestionIndex
         {
+            get
+            {
+                _questionIndex++;
+                return _questionIndex;
+            }
+        }
+
+        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate = 50)
+        {
+            _rng = rng;
             _choosenCategoryName = null;
             _categories = new List<string>
             {
@@ -31,8 +47,8 @@ namespace Trivia
             foreach (string category in _categories)
             {
                 Queue<string> questions = new Queue<string>();
-                for (int i = 0; i < 50; i++)
-                    questions.Enqueue(CreateQuestion(i, category));
+                for (int i = 0; i < amountOfQuestionToGenerate; i++)
+                    questions.Enqueue(CreateQuestion(QuestionIndex, category));
                 _questionsCategory.Add(category, questions);
             }
 
@@ -54,18 +70,21 @@ namespace Trivia
 
         public void TryRoll(int roll)
         {
-            if (!CanPlay(roll)) return;
+            if (!CanPlay()) return;
             Roll(roll);
+            if(CurrentCategoryQueue.Count == 0)
+                CurrentCategoryQueue.Enqueue(CreateQuestion(QuestionIndex, CurrentCategoryName));
             NewQuestionText();
             CurrentCategoryQueue.Dequeue();
             _choosenCategoryName = null;
         }
 
-        private bool CanPlay(int roll)
+        private bool CanPlay()
         {
             if (CurrentPlayer.InPenaltyBox)
             {
-                CurrentPlayer.InPenaltyBox = roll % 2 == 0;
+                ChancesOfGettingOutOfPenaltyText();
+                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= 1f / CurrentPlayer.AmountOfTimeInPrison;
                 GettingOutOfPenaltyText(CurrentPlayer.InPenaltyBox);
                 return !CurrentPlayer.InPenaltyBox;
             }
@@ -124,6 +143,7 @@ namespace Trivia
         {
             CurrentPlayer.Coins += CurrentPlayer.WinStreak;
             CurrentPlayer.WinStreak++;
+            
             CorrectAnswerText();
         }
 
@@ -146,6 +166,9 @@ namespace Trivia
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
+
+        private void ChancesOfGettingOutOfPenaltyText() =>
+            Console.WriteLine($"Current chances of getting out of prison are 1 / {CurrentPlayer.AmountOfTimeInPrison}");
 
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
