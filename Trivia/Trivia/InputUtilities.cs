@@ -20,5 +20,17 @@ namespace Trivia
                 if (!(possibleAnswers[answer] is null))                
                     possibleAnswers[answer]();
         }
+        
+        public static void AskSucces(bool succes, Action trueAction, Action falseAction)
+        {
+            if (succes)
+            {
+                trueAction();
+            }
+            else
+            {
+                falseAction();
+            }
+        }
     }
 }
