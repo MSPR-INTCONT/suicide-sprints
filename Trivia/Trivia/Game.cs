@@ -45,7 +45,9 @@ namespace Trivia
 
         public Game(Config config = null)
         {
-            if (config != null) GameSetup(config.Players, config.CoinsToWin, config.Seed, config.MaxAmountOfPrisoners);
+            if (config != null)
+                GameSetup(config.Players, config.CoinsToWin, config.Seed, config.MaxAmountOfPrisoners,
+                    config.UseTechno);
         }
 
         public Game(List<string> playerNames)
@@ -54,9 +56,9 @@ namespace Trivia
         }
 
         private void GameSetup(List<string> playerNames, int coinsToWin = 6, int seed = 0,
-            int maxAmountOfPrisonners = 0)
+            int maxAmountOfPrisoners = 0, bool useTechno = false)
         {
-            _maxAmountOfPrisoners = maxAmountOfPrisonners;
+            _maxAmountOfPrisoners = maxAmountOfPrisoners;
             foreach (string name in playerNames)
                 _players.Add(new Player(name));
 
@@ -65,7 +67,8 @@ namespace Trivia
             _choosenCategoryName = null;
             _categories = new List<string>
             {
-                "Pop", "Science", "Sports", "Techno", "Rock", "Rap", "Philosophy", "Literature", "Geography", "People"
+                "Pop", "Science", "Sports", useTechno ? "Techno" : "Rock", "Rap", "Philosophy", "Literature",
+                "Geography", "People"
             };
 
             foreach (string category in _categories)
@@ -79,6 +82,7 @@ namespace Trivia
 
             Console.WriteLine("Game Started With Parameters:\r\n\t" +
                               $"Amount Of Coins To Win: {_coinsToWin}\r\n\t" +
+                              $"Use Techno: {useTechno}\r\n\t" +
                               $"Random Seed: {seed}\r\n\t" +
                               $"Players: {players}\n\n\n");
         }
@@ -188,7 +192,7 @@ namespace Trivia
             CurrentPlayer.InPenaltyBox = true;
             CurrentPlayer.WinStreak = 1;
             WrongAnswerText();
-            
+
             if (_prisoners.Count > _maxAmountOfPrisoners)
             {
                 Player prisoner = _prisoners.Dequeue();
@@ -196,6 +200,7 @@ namespace Trivia
                 prisoner.WinStreak = 1;
                 Console.WriteLine($"prison is full : {prisoner} is getting out of penalty box");
             }
+
             _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
 

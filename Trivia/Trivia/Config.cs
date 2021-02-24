@@ -8,12 +8,14 @@ namespace Trivia
         public int CoinsToWin;
         public int Seed;
         public List<string> Players;
+        public bool UseTechno;
         public int MaxAmountOfPrisoners;
 
         public Config(List<string> playerNames)
         {
             Players = playerNames;
             AskGoldNumberToWin();
+            AskUseTechno();
             AskMaxAmountOfPrisoners();
             // AskForSeed();
         }
@@ -27,6 +29,17 @@ namespace Trivia
         {
             MaxAmountOfPrisoners =
                 InputUtilities.AskForNumberWithMaxValue("How much prisoners maximum ?", Players.Count - 1);
+        }
+        
+        public void AskUseTechno()
+        {
+            bool useTechno = false;
+            InputUtilities.AskQuestion("Do you want to replace Rock by Techno ?", new Dictionary<string, Action>
+            {
+                {"yes", () => useTechno = true},
+                {"no", () => useTechno = false},
+            });
+            UseTechno = useTechno;
         }
 
         public void AskForSeed()
