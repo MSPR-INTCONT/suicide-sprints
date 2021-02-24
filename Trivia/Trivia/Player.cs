@@ -4,13 +4,25 @@ namespace Trivia
 {
     public class Player
     {
-        private readonly int _places;
-        private readonly int _purses;
-        private readonly bool _inPenaltyBox;
+        private readonly string _name;
 
-        public Player()
+        public Player(string name)
         {
-            
+            _name = name;
+            Place = 0;
+            Coins = 0;
+            InPenaltyBox = false;
+            HasJoker = true;
         }
+
+        public int Place { get; set; }
+
+        public int Coins { get; set; }
+
+        public bool InPenaltyBox { get; set; }
+
+        public bool HasJoker { get; set; }
+
+        public override string ToString() => _name;
     }
 }
