@@ -12,7 +12,7 @@ namespace Trivia
 
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
         private string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
+        public bool HaveAWinner => _players.Exists(player => player.Coins >= _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
