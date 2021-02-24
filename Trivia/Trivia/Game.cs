@@ -34,7 +34,7 @@ namespace Trivia
             }
         }
 
-        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate)
+        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate = 50)
         {
             _rng = rng;
             _choosenCategoryName = null;

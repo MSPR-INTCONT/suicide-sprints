@@ -15,10 +15,10 @@ namespace Tests
             List<string> players = new List<string>()
             {
                 "Alex", "Gab", "Nico"
-            };
-            Game game = new Game(true);
-            game.Add(players);
+            };            
             Random rand = new Random();
+            Game game = new Game(true, rand);
+            game.Add(players);
             int numberQuestion = 500;
             for (int i = 0; i < numberQuestion * players.Count; i++)
             {
