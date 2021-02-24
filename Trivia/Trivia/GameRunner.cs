@@ -16,7 +16,7 @@ namespace Trivia
         private static void MakeGame(List<string> players, int seed)
         {
             Config configGame = new Config();
-            Game aGame = new Game(configGame, 0);
+            Game aGame = new Game(configGame);
             aGame.Add(players);
             
             if (!aGame.IsPlayable())
@@ -42,6 +42,8 @@ namespace Trivia
 
                 aGame.SelectNextPlayer();
             } while (!aGame.IsGameOver);
+
+            aGame.DisplayLeaderboard();
         }
     }
 }

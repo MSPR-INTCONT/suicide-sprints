@@ -12,7 +12,9 @@ namespace Trivia
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
 
         public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool IsGameOver => _players.Exists(player => player.Coins == _coinsToWin);
+        public bool IsGameOver => _leaderboard.Count >= 3 || !IsPlayable();
+
+        public bool HasCurrentPlayerFinished => CurrentPlayer.Coins >= _coinsToWin;
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -36,8 +38,8 @@ namespace Trivia
                 return _questionIndex;
             }
         }
-
-        public Game(Config config = null, int amountOfQuestionToGenerate = 50)
+        
+        public Game(Config config = null)
         {
             _rng = new Random(config?._seed ?? 0);
             _choosenCategoryName = null;
@@ -47,16 +49,11 @@ namespace Trivia
             };
 
             foreach (string category in _categories)
-            {
-                Queue<string> questions = new Queue<string>();
-                for (int i = 0; i < amountOfQuestionToGenerate; i++)
-                    questions.Enqueue(CreateQuestion(QuestionIndex, category));
-                _questionsCategory.Add(category, questions);
-            }
+                _questionsCategory.Add(category, new Queue<string>());
 
             _coinsToWin = config?._coinsToWin ?? 6;
         }
-        
+
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
 
         private int DiceRoll() => _rng.Next(5) + 1;
@@ -78,7 +75,6 @@ namespace Trivia
             if(CurrentCategoryQueue.Count == 0)
                 CurrentCategoryQueue.Enqueue(CreateQuestion(QuestionIndex, CurrentCategoryName));
             NewQuestionText();
-            CurrentCategoryQueue.Dequeue();         
             _choosenCategoryName = null;
         }
 
@@ -86,8 +82,11 @@ namespace Trivia
         {
             if (CurrentPlayer.InPenaltyBox)
             {
-                ChancesOfGettingOutOfPenaltyText();
-                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= 1f / CurrentPlayer.AmountOfTimeInPrison;
+                float chancesOfGettingOut = (1f / CurrentPlayer.AmountOfTimeInPrison) * (1 + CurrentPlayer.PercentIncreaseFromTurnSpentInPrison);
+                ChancesOfGettingOutOfPenaltyText(chancesOfGettingOut);
+                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= chancesOfGettingOut;
+                if (CurrentPlayer.InPenaltyBox)
+                    CurrentPlayer.TurnSpentInPrison++;
                 GettingOutOfPenaltyText(CurrentPlayer.InPenaltyBox);
                 return !CurrentPlayer.InPenaltyBox;
             }
@@ -111,6 +110,7 @@ namespace Trivia
                     {
                         quitGame = true;
                         _players.Remove(CurrentPlayer);
+                        SelectPreviousPlayer();
                     }
                 },
                 {"no", null}
@@ -136,13 +136,28 @@ namespace Trivia
             });
             return useJoker;
         }
-
+        
         public void CorrectAnswer()
         {
             CurrentPlayer.Coins += CurrentPlayer.WinStreak;
             CurrentPlayer.WinStreak++;
-            
+
             CorrectAnswerText();
+            if (HasCurrentPlayerFinished)
+            {
+                WonText();
+                _leaderboard.Add(CurrentPlayer);
+                _players.Remove(CurrentPlayer);
+                SelectPreviousPlayer();
+                if (!IsPlayable())
+                {
+                    foreach (Player player in _players.OrderBy(player => player.Coins))
+                    {
+                        if (_leaderboard.Count >= 3) break;
+                        _leaderboard.Add(player);
+                    }
+                }
+            }
         }
 
         public void WrongAnswer()
@@ -165,24 +180,47 @@ namespace Trivia
         
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
+        public void SelectPreviousPlayer()
+        {
+            _currentPlayerIndex--;
+            if (_currentPlayerIndex < 0)
+                _currentPlayerIndex = _players.Count - 1;
+        }
+
+
+        public void DisplayLeaderboard()
+        {
+            Console.WriteLine("\n\nLeaderboard :\n\n");
+            int i = 0;
+            foreach (Player leader in _leaderboard)
+            {
+                Console.WriteLine($"{i + 1} : {leader}");
+                i++;
+            }
+        }
+
         private void NewPlayerAddedText(string player) =>
             Console.WriteLine($"{player} was added\r\n" +
                               $"They are player number {PlayersCount}");
+
+        private void WonText() => Console.WriteLine($"{CurrentPlayer} is now in leaderboard");
 
         public void StartTurnText() =>
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
 
-        private void ChancesOfGettingOutOfPenaltyText() =>
-            Console.WriteLine($"Current chances of getting out of prison are 1 / {CurrentPlayer.AmountOfTimeInPrison}");
+        private void ChancesOfGettingOutOfPenaltyText(float chancesOfGettingOut) =>
+            Console.WriteLine(
+                $"Current chances of getting out of prison are {chancesOfGettingOut*100}%");
 
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
 
         private void NewQuestionText() =>
             Console.WriteLine($"{CurrentPlayer}'s new location is {CurrentPlayer.Place}\r\n" +
-                              $"The category is {CurrentCategoryName}\r\n");
+                              $"The category is {CurrentCategoryName}\r\n" +
+                              $"{CurrentCategoryQueue.Dequeue()}");
 
         private void CorrectAnswerText() =>
             Console.WriteLine("Answer was correct!!!!\r\n" +

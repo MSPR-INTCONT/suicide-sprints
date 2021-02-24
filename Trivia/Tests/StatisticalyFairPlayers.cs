@@ -9,7 +9,7 @@ namespace Tests
     public class StatisticalyFairPlayers
     {
         [Fact]
-        public void DefectTest()
+        public void QuestionDistributionIsFair()
         {
             Dictionary<string, Dictionary<string, int>> stats = new Dictionary<string, Dictionary<string, int>>(); 
             List<string> players = new List<string>()
@@ -19,7 +19,7 @@ namespace Tests
             Random rand = new Random();
             Game game = new Game(true, rand);
             game.Add(players);
-            int numberQuestion = 500;
+            int numberQuestion = 50000;
             for (int i = 0; i < numberQuestion * players.Count; i++)
             {
                 game.Roll(rand.Next(5) + 1);
@@ -45,7 +45,7 @@ namespace Tests
             int sumDiff = diff.Sum();
             int diffAccount = sumDiff / diff.Count;
             float percent = (float)diffAccount / numberQuestion;
-            Assert.True(percent < 0.05f);
+            Assert.True(percent < 0.01f, $"{percent} is not smaller than 0.05");
         }
         
     }
