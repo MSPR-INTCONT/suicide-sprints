@@ -11,7 +11,7 @@ namespace Trivia
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
 
-        public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
+        public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % _categories.Count];
         public bool IsGameOver => _leaderboard.Count >= 3 || !IsPlayable();
 
         public bool HasCurrentPlayerFinished => CurrentPlayer.Coins >= _coinsToWin;
@@ -49,7 +49,7 @@ namespace Trivia
             _choosenCategoryName = null;
             _categories = new List<string>
             {
-                "Pop", "Science", "Sports", config != null && config._isTechno ? "Techno" : "Rock"
+                "Pop", "Science", "Sports", "Techno", "Rock", "Rap", "Philosophy", "Literature", "Geography", "People"
             };
 
             foreach (string category in _categories)
@@ -63,7 +63,6 @@ namespace Trivia
 
             Console.WriteLine("Game Started With Parameters:\r\n\t" +
                               $"Amount Of Coins To Win: {_coinsToWin}\r\n\t" +
-                              $"Use Techno Question: {config?._isTechno}\r\n\t" +
                               $"Random Seed: {config?._seed}\r\n\t" +
                               $"Players: {players}\n\n\n");
         }

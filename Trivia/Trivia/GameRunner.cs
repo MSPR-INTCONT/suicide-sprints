@@ -34,7 +34,7 @@ namespace Trivia
                     {
                         aGame.TryRoll();
                         if (!aGame.AskForJokerUse())
-                            aGame.Answer(true);
+                            aGame.Answer(false);
                     }
                     else if (!aGame.IsPlayable())
                     {
