@@ -89,13 +89,24 @@ namespace Trivia
             RollWhenNotInPenaltyBox(roll);
         }
 
-        private void RollWhenNotInPenaltyBox(int roll)
+        public bool AskForJokerUse()
         {
-            _places[_currentPlayerIndex] = _places[_currentPlayerIndex] + roll;
-            if (_places[_currentPlayerIndex] > 11) _places[_currentPlayerIndex] = _places[_currentPlayerIndex] - 12;
-        }
+            if (!CurrentPlayer.HasJoker) return false;
 
-        private int CurrentCategory() => _places[_currentPlayerIndex] % 4;
+            bool useJoker = false;
+            InputUtilities.AskQuestion("Do you want to use a joker ?", new Dictionary<string, Action>
+            {
+                {
+                    "yes", () =>
+                    {
+                        useJoker = true;
+                        CurrentPlayer.HasJoker = false;
+                    }
+                },
+                {"no", null}
+            });
+            return useJoker;
+        }
 
         public void CorrectAnswer()
         {
