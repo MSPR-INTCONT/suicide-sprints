@@ -42,12 +42,10 @@ namespace Trivia
         public Game(List<string> playerNames, Config config = null)
         {
             foreach (string name in playerNames)
-            {
                 _players.Add(new Player(name));
-                NewPlayerAddedText(name);
-            }
 
-            _rng = new Random(config?._seed ?? 0);
+            // _rng = config is null ? new Random() : new Random(config._seed);
+            _rng = new Random();
             _choosenCategoryName = null;
             _categories = new List<string>
             {
@@ -206,10 +204,6 @@ namespace Trivia
                 i++;
             }
         }
-
-        private void NewPlayerAddedText(string player) =>
-            Console.WriteLine($"{player} was added\r\n" +
-                              $"They are player number {PlayersCount}");
 
         private void WonText() => Console.WriteLine($"{CurrentPlayer} is now in leaderboard");
 

@@ -12,7 +12,7 @@ namespace Trivia
         {
             AskGoldNumberToWin();
             AskForTechnoOrRock();
-            AskForSeed();
+            // AskForSeed();
         }
         
         public void AskGoldNumberToWin()
