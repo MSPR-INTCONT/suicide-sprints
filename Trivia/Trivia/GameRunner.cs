@@ -15,21 +15,10 @@ namespace Trivia
 
         private static void MakeGame(List<string> players, int seed)
         {
-            Random rng = new Random(seed);
-            int DiceRoll() => rng.Next(5) + 1;
-
-            bool isTechno = false;
-            InputUtilities.AskQuestion("Replace Rock questions by Techno questions ?", new Dictionary<string, Action>
-            {
-                {"yes", () => isTechno = true},
-                {"no", () => isTechno = false}
-            });
-
-            Game aGame = new Game(isTechno,rng, 50);
-            aGame.AskGoldNumberToWin();
+            Config configGame = new Config();
+            Game aGame = new Game(configGame, 0);
             aGame.Add(players);
-    
-
+            
             if (!aGame.IsPlayable())
             {
                 Console.WriteLine("Can't start Game");
@@ -41,9 +30,9 @@ namespace Trivia
                 aGame.StartTurnText();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
-                    aGame.TryRoll(DiceRoll());
+                    aGame.TryRoll();
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(true, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        aGame.Answer(true);
                 }
                 else if (!aGame.IsPlayable())
                 {

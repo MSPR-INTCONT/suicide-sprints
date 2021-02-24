@@ -17,10 +17,12 @@ namespace Trivia
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
         private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
+        
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
         private int _coinsToWin;
-
+        private int _seed;
+        
         private readonly Random _rng;
         private readonly List<Player> _leaderboard = new List<Player>();
 
@@ -35,13 +37,13 @@ namespace Trivia
             }
         }
 
-        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate = 50)
+        public Game(Config config = null, int amountOfQuestionToGenerate = 50)
         {
-            _rng = rng;
+            _rng = new Random(config?._seed ?? 0);
             _choosenCategoryName = null;
             _categories = new List<string>
             {
-                "Pop", "Science", "Sports", useTechnoQuestion ? "Techno" : "Rock"
+                "Pop", "Science", "Sports", config != null && config._isTechno ? "Techno" : "Rock"
             };
 
             foreach (string category in _categories)
@@ -52,11 +54,12 @@ namespace Trivia
                 _questionsCategory.Add(category, questions);
             }
 
-            _coinsToWin = 6;
+            _coinsToWin = config?._coinsToWin ?? 6;
         }
         
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
 
+        private int DiceRoll() => _rng.Next(5) + 1;
         public bool IsPlayable() => PlayersCount >= 2 && PlayersCount <= 6;
 
         public void Add(List<string> playerNames)
@@ -68,14 +71,14 @@ namespace Trivia
             }
         }
 
-        public void TryRoll(int roll)
+        public void TryRoll()
         {
             if (!CanPlay()) return;
-            Roll(roll);
+            Roll(DiceRoll());
             if(CurrentCategoryQueue.Count == 0)
                 CurrentCategoryQueue.Enqueue(CreateQuestion(QuestionIndex, CurrentCategoryName));
             NewQuestionText();
-            CurrentCategoryQueue.Dequeue();
+            CurrentCategoryQueue.Dequeue();         
             _choosenCategoryName = null;
         }
 
@@ -134,11 +137,6 @@ namespace Trivia
             return useJoker;
         }
 
-        public void AskGoldNumberToWin()
-        {
-            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
-        }
-
         public void CorrectAnswer()
         {
             CurrentPlayer.Coins += CurrentPlayer.WinStreak;
@@ -155,7 +153,16 @@ namespace Trivia
             _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
 
+        public void Answer(bool isCorrectAnswer)
+        {
+            Answer(1, isCorrectAnswer);
+        }
 
+        public void Answer(float percent, bool? isCorrectAnswer = null)
+        {
+            InputUtilities.AskSuccess(isCorrectAnswer ?? _rng.NextDouble() <= percent, CorrectAnswer, WrongAnswer);
+        }
+        
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
         private void NewPlayerAddedText(string player) =>
