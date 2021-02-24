@@ -7,6 +7,17 @@ namespace Trivia
     {
         public static void Main(string[] args)
         {
+            MakeGame(new List<string>
+            {
+                "Cat", "Test"
+            }, 1);
+        }
+
+        private static void MakeGame(List<string> players, int seed)
+        {
+            Random Rng = new Random(seed);
+            int DiceRoll() => Rng.Next(5) + 1;
+            
             bool isTechno = false;
             InputUtilities.AskQuestion("Replace Rock questions by Techno questions ?", new Dictionary<string, Action>
             {
@@ -15,10 +26,7 @@ namespace Trivia
             });
 
             Game aGame = new Game(isTechno);
-            aGame.Add(new List<string>
-            {
-                "Cat", "Test"
-            });
+            aGame.Add(players);
 
 
             if (!aGame.IsPlayable())
@@ -27,16 +35,14 @@ namespace Trivia
                 return;
             }
 
-            Random rand = new Random();
-
             do
             {
                 aGame.StartTurn();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
-                    aGame.TryRoll(InputUtilities.DiceRoll());
+                    aGame.TryRoll(DiceRoll());
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(rand.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        InputUtilities.AskSuccess(Rng.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
                 else if (!aGame.IsPlayable())
                 {
