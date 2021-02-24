@@ -76,17 +76,21 @@ namespace Trivia
             }
         }
 
-        private void RollWhenInPenaltyBox(int roll)
+        public bool AskIfPlayerWantToLeaveGame()
         {
-            _isGettingOutOfPenaltyBox = roll % 2 != 0;
-            if (!_isGettingOutOfPenaltyBox)
+            bool quitGame = false;
+            InputUtilities.AskQuestion("Do you want to quit game ?", new Dictionary<string, Action>
             {
-                NotGettingOutOfPenalty();
-                return;
-            }
-
-            GettingOutOfPenaltyText();
-            RollWhenNotInPenaltyBox(roll);
+                {
+                    "yes", () =>
+                    {
+                        quitGame = true;
+                        _players.Remove(CurrentPlayer);
+                    }
+                },
+                {"no", null}
+            });
+            return quitGame;
         }
 
         public bool AskForJokerUse()
