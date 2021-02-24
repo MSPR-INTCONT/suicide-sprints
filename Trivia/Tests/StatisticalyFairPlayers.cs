@@ -19,7 +19,7 @@ namespace Tests
             Game game = new Game(true);
             game.Add(players);
             Random rand = new Random();
-            int numberQuestion = 300;
+            int numberQuestion = 500;
             for (int i = 0; i < numberQuestion * players.Count; i++)
             {
                 game.Roll(rand.Next(5) + 1);
@@ -44,8 +44,8 @@ namespace Tests
 
             int sumDiff = diff.Sum();
             int diffAccount = sumDiff / diff.Count;
-            int percent = diffAccount / numberQuestion;
-            Assert.True(percent < 0.5);
+            float percent = (float)diffAccount / numberQuestion;
+            Assert.True(percent < 0.05f);
         }
         
     }
