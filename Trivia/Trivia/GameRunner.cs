@@ -13,7 +13,7 @@ namespace Trivia
                 {"yes", () => isTechno = true},
                 {"no", () => isTechno = false}
             });
-            
+
             Game aGame = new Game(isTechno);
             aGame.Add(new List<string>
             {
@@ -31,11 +31,6 @@ namespace Trivia
 
             do
             {
-                if (!aGame.IsPlayable())
-                {
-                    Console.WriteLine("Game Can't be played anymore");
-                    return;
-                }
                 aGame.StartTurn();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
@@ -43,9 +38,13 @@ namespace Trivia
                     if (!aGame.AskForJokerUse())
                         InputUtilities.AskSuccess(rand.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
+                else if (!aGame.IsPlayable())
+                {
+                    Console.WriteLine("Game Can't be played anymore");
+                    return;
+                }
 
                 aGame.SelectNextPlayer();
-                
             } while (!aGame.HaveAWinner);
         }
     }
