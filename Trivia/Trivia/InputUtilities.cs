@@ -60,5 +60,8 @@ namespace Trivia
 
             return answer;
         }
+
+        private static Random rng => new Random();
+        public static int DiceRoll() => rng.Next(5) + 1;
     }
 }

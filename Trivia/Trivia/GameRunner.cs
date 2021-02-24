@@ -34,7 +34,7 @@ namespace Trivia
                 aGame.StartTurn();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
-                    aGame.TryRoll(rand.Next(5) + 1);
+                    aGame.TryRoll(InputUtilities.DiceRoll());
                     if (!aGame.AskForJokerUse())
                         InputUtilities.AskSuccess(rand.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
