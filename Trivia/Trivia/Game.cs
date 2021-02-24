@@ -10,6 +10,7 @@ namespace Trivia
 
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
+
         public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
         public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
 
@@ -19,10 +20,13 @@ namespace Trivia
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
         private readonly int _coinsToWin;
+        private readonly Random _rng;
+        private readonly List<Player> leaderboard = new List<Player>();
 
 
-        public Game(bool useTechnoQuestion)
+        public Game(bool useTechnoQuestion, Random rng)
         {
+            _rng = rng;
             _choosenCategoryName = null;
             _categories = new List<string>
             {
@@ -60,17 +64,18 @@ namespace Trivia
 
         public void TryRoll(int roll)
         {
-            if (!CanPlay(roll)) return;
+            if (!CanPlay()) return;
             Roll(roll);
             NewQuestionText();
             _choosenCategoryName = null;
         }
 
-        private bool CanPlay(int roll)
+        private bool CanPlay()
         {
             if (CurrentPlayer.InPenaltyBox)
             {
-                CurrentPlayer.InPenaltyBox = roll % 2 == 0;
+                ChancesOfGettingOutOfPenaltyText();
+                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= 1f / CurrentPlayer.AmountOfTimeInPrison;
                 GettingOutOfPenaltyText(CurrentPlayer.InPenaltyBox);
                 return !CurrentPlayer.InPenaltyBox;
             }
@@ -146,6 +151,9 @@ namespace Trivia
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
+
+        private void ChancesOfGettingOutOfPenaltyText() =>
+            Console.WriteLine($"Current chances of getting out of prison are 1 / {CurrentPlayer.AmountOfTimeInPrison}");
 
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");

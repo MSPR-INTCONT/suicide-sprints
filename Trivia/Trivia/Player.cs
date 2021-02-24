@@ -5,7 +5,7 @@ namespace Trivia
     public class Player
     {
         private readonly string _name;
-
+        private int _amountOfTimeInPrison = 0;
         public Player(string name)
         {
             _name = name;
@@ -14,6 +14,7 @@ namespace Trivia
             WinStreak = 1;
             InPenaltyBox = false;
             HasJoker = true;
+            
         }
 
         public int Place { get; set; }
@@ -22,9 +23,21 @@ namespace Trivia
 
         public int WinStreak { get; set; }
         
-        public bool InPenaltyBox { get; set; }
+        public bool InPenaltyBox
+        {
+            get => InPenaltyBox;
+            set
+            {
+                if (InPenaltyBox == false && value)
+                {
+                    _amountOfTimeInPrison++;
+                } 
+            } }
 
         public bool HasJoker { get; set; }
+
+        public int AmountOfTimeInPrison => _amountOfTimeInPrison;
+
         
         public override string ToString() => _name;
     }
