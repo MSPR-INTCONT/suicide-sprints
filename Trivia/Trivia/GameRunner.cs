@@ -16,34 +16,44 @@ namespace Trivia
         private static void MakeGame(List<string> players, int seed)
         {
             Config configGame = new Config();
-            Game aGame = new Game(configGame);
-            aGame.Add(players);
-            
-            if (!aGame.IsPlayable())
-            {
-                Console.WriteLine("Can't start Game");
-                return;
-            }
-
+            bool newGame = false;
             do
             {
-                aGame.StartTurnText();
-                if (!aGame.AskIfPlayerWantToLeaveGame())
+                Game aGame = new Game(configGame);
+                aGame.Add(players);
+
+                if (!aGame.IsPlayable())
                 {
-                    aGame.TryRoll();
-                    if (!aGame.AskForJokerUse())
-                        aGame.Answer(true);
-                }
-                else if (!aGame.IsPlayable())
-                {
-                    Console.WriteLine("Game Can't be played anymore");
+                    Console.WriteLine("Can't start Game");
                     return;
                 }
 
-                aGame.SelectNextPlayer();
-            } while (!aGame.IsGameOver);
+                do
+                {
+                    aGame.StartTurnText();
+                    if (!aGame.AskIfPlayerWantToLeaveGame())
+                    {
+                        aGame.TryRoll();
+                        if (!aGame.AskForJokerUse())
+                            aGame.Answer(true);
+                    }
+                    else if (!aGame.IsPlayable())
+                    {
+                        Console.WriteLine("Game Can't be played anymore");
+                        return;
+                    }
 
-            aGame.DisplayLeaderboard();
+                    aGame.SelectNextPlayer();
+                } while (!aGame.IsGameOver);
+
+                aGame.DisplayLeaderboard();
+
+                InputUtilities.AskQuestion("Do you want to play a new game ?", new Dictionary<string, Action>
+                {
+                    {"yes", () => newGame = true},
+                    {"no", () => newGame = false}
+                });
+            } while (newGame);
         }
     }
 }
