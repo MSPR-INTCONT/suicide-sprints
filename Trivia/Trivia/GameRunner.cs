@@ -8,11 +8,14 @@ namespace Trivia
         public static void Main(string[] args)
         {
 
-            Console.WriteLine("Techno (y) : ");
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
-            bool isTechno = keyInfo.Key == ConsoleKey.Y;
-            
-            var aGame = new Game(isTechno);
+            bool isTechno = false;
+            InputUtilities.AskQuestion("Replace Rock questions by Techno questions ?", new Dictionary<string, Action>
+            {
+                {"yes", () => isTechno = true},
+                {"no", () => isTechno = false}
+            });
+
+            Game aGame = new Game(isTechno);
             aGame.Add(new List<string>
             {
                 "Cat", "Test"
@@ -21,22 +24,35 @@ namespace Trivia
 
             if (!aGame.IsPlayable())
             {
-                Console.WriteLine("Pas possible de lancer la partie");
+                Console.WriteLine("Can't start Game");
                 return;
             }
 
-            var rand = new Random();
+            Random rand = new Random();
 
             do
             {
-                aGame.Roll(rand.Next(5) + 1);
+                if (!aGame.IsPlayable())
+                {
+                    Console.WriteLine("Game Can't be played anymore");
+                    return;
+                }
+                aGame.StartTurn();
+                if (!aGame.AskIfPlayerWantToLeaveGame())
+                {
+                    aGame.TryRoll(rand.Next(5) + 1);
+                    if (!aGame.AskForJokerUse())
+                    {
+                        if (rand.Next(9) == 7)
+                            aGame.WrongAnswer();
+                        else
+                            aGame.CorrectAnswer();
+                    }
+                }
 
-                if (rand.Next(9) == 7)
-                    aGame.WrongAnswer();
-                else
-                    aGame.CorrectAnswer();
+                aGame.SelectNextPlayer();
                 
-            } while (!aGame.DidPlayerWin);
+            } while (!aGame.HaveAWinner);
         }
     }
 }
