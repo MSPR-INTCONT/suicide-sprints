@@ -9,7 +9,7 @@ namespace Trivia
         {
             MakeGame(new List<string>
             {
-                "Cat", "Test", "AZ", "J"
+                "Cat", "Test"
             }, 89);
         }
 
@@ -43,7 +43,7 @@ namespace Trivia
                 {
                     aGame.TryRoll(DiceRoll());
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(rng.NextDouble() > .5f, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        InputUtilities.AskSuccess(false, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
                 else if (!aGame.IsPlayable())
                 {

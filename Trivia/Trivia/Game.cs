@@ -51,7 +51,7 @@ namespace Trivia
 
             _coinsToWin = 6;
         }
-        
+
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
 
         public bool IsPlayable() => PlayersCount >= 2 && PlayersCount <= 6;
@@ -79,8 +79,11 @@ namespace Trivia
         {
             if (CurrentPlayer.InPenaltyBox)
             {
-                ChancesOfGettingOutOfPenaltyText();
-                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= 1f / CurrentPlayer.AmountOfTimeInPrison;
+                float chancesOfGettingOut = (1f / CurrentPlayer.AmountOfTimeInPrison) * (1 + CurrentPlayer.PercentIncreaseFromTurnSpentInPrison);
+                ChancesOfGettingOutOfPenaltyText(chancesOfGettingOut);
+                CurrentPlayer.InPenaltyBox = _rng.NextDouble() >= chancesOfGettingOut;
+                if (CurrentPlayer.InPenaltyBox)
+                    CurrentPlayer.TurnSpentInPrison++;
                 GettingOutOfPenaltyText(CurrentPlayer.InPenaltyBox);
                 return !CurrentPlayer.InPenaltyBox;
             }
@@ -140,7 +143,7 @@ namespace Trivia
         {
             CurrentPlayer.Coins += CurrentPlayer.WinStreak;
             CurrentPlayer.WinStreak++;
-            
+
             CorrectAnswerText();
             if (HasCurrentPlayerFinished)
             {
@@ -178,7 +181,8 @@ namespace Trivia
         }
 
 
-        public void DisplayLeaderboard()    {
+        public void DisplayLeaderboard()
+        {
             Console.WriteLine("\n\nLeaderboard :\n\n");
             int i = 0;
             foreach (Player leader in _leaderboard)
@@ -187,20 +191,21 @@ namespace Trivia
                 i++;
             }
         }
-        
+
         private void NewPlayerAddedText(string player) =>
             Console.WriteLine($"{player} was added\r\n" +
                               $"They are player number {PlayersCount}");
 
         private void WonText() => Console.WriteLine($"{CurrentPlayer} is now in leaderboard");
-        
+
         public void StartTurnText() =>
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
 
-        private void ChancesOfGettingOutOfPenaltyText() =>
-            Console.WriteLine($"Current chances of getting out of prison are 1 / {CurrentPlayer.AmountOfTimeInPrison}");
+        private void ChancesOfGettingOutOfPenaltyText(float chancesOfGettingOut) =>
+            Console.WriteLine(
+                $"Current chances of getting out of prison are {chancesOfGettingOut}%");
 
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
