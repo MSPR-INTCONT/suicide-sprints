@@ -9,7 +9,7 @@ namespace Tests
     public class StatisticalyFairPlayers
     {
         [Fact]
-        public void DefectTest()
+        public void QuestionDistributionIsFair()
         {
             Dictionary<string, Dictionary<string, int>> stats = new Dictionary<string, Dictionary<string, int>>(); 
             List<string> players = new List<string>()
