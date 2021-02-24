@@ -15,11 +15,11 @@ namespace Trivia
 
         private static void MakeGame(List<string> players, int seed)
         {
-            Config configGame = new Config();
+            Config configGame = new Config(players);
             bool newGame = false;
             do
             {
-                Game aGame = new Game(players, configGame);
+                Game aGame = new Game(configGame);
 
                 if (!aGame.IsPlayable())
                 {

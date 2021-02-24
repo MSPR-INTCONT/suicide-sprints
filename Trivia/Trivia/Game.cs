@@ -11,21 +11,25 @@ namespace Trivia
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
 
-        public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % _categories.Count];
+        public string CurrentCategoryName =>
+            _choosenCategoryName ?? _categories[CurrentPlayer.Place % _categories.Count];
+
         public bool IsGameOver => _leaderboard.Count >= 3 || !IsPlayable();
 
         public bool HasCurrentPlayerFinished => CurrentPlayer.Coins >= _coinsToWin;
 
-        private readonly List<string> _categories;
+        private List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
         private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
+        private readonly Queue<Player> _prisoners = new Queue<Player>();
 
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
         private int _coinsToWin;
         private int _seed;
+        private int _maxAmountOfPrisoners;
 
-        private readonly Random _rng;
+        private Random _rng;
         private readonly List<Player> _leaderboard = new List<Player>();
 
         private int _questionIndex;
@@ -39,8 +43,20 @@ namespace Trivia
             }
         }
 
-        public Game(List<string> playerNames, Config config = null)
+        public Game(Config config = null)
         {
+            if (config != null) GameSetup(config.Players, config.CoinsToWin, config.Seed, config.MaxAmountOfPrisoners);
+        }
+
+        public Game(List<string> playerNames)
+        {
+            GameSetup(playerNames);
+        }
+
+        private void GameSetup(List<string> playerNames, int coinsToWin = 6, int seed = 0,
+            int maxAmountOfPrisonners = 0)
+        {
+            _maxAmountOfPrisoners = maxAmountOfPrisonners;
             foreach (string name in playerNames)
                 _players.Add(new Player(name));
 
@@ -55,7 +71,7 @@ namespace Trivia
             foreach (string category in _categories)
                 _questionsCategory.Add(category, new Queue<string>());
 
-            _coinsToWin = config?._coinsToWin ?? 6;
+            _coinsToWin = coinsToWin;
 
             string players = String.Empty;
             foreach (Player player in _players)
@@ -63,7 +79,7 @@ namespace Trivia
 
             Console.WriteLine("Game Started With Parameters:\r\n\t" +
                               $"Amount Of Coins To Win: {_coinsToWin}\r\n\t" +
-                              $"Random Seed: {config?._seed}\r\n\t" +
+                              $"Random Seed: {seed}\r\n\t" +
                               $"Players: {players}\n\n\n");
         }
 
@@ -167,9 +183,19 @@ namespace Trivia
 
         public void WrongAnswer()
         {
+            _prisoners.Enqueue(CurrentPlayer);
+
             CurrentPlayer.InPenaltyBox = true;
             CurrentPlayer.WinStreak = 1;
             WrongAnswerText();
+            
+            if (_prisoners.Count > _maxAmountOfPrisoners)
+            {
+                Player prisoner = _prisoners.Dequeue();
+                prisoner.InPenaltyBox = false;
+                prisoner.WinStreak = 1;
+                Console.WriteLine($"prison is full : {prisoner} is getting out of penalty box");
+            }
             _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
 

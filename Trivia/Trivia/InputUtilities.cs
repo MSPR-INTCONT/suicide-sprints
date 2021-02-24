@@ -34,6 +34,20 @@ namespace Trivia
 
             return result;
         }
+        
+        public static int AskForNumberWithMaxValue(string question, int maxValue)
+        {
+            string answer;
+            int result;
+            do
+            {
+                Console.WriteLine($"Question : {question}\r\nAccepted Answers : (<={maxValue})");
+                answer = Console.ReadLine();
+            } while (answer is null || !(Int32.TryParse(answer, out  result) && result <= maxValue && result > 0));
+
+            return result;
+        }
+
 
         public static void AskSuccess(bool success, Action trueAction, Action falseAction)
         {
