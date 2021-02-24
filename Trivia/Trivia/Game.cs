@@ -63,8 +63,7 @@ namespace Trivia
             foreach (string name in playerNames)
                 _players.Add(new Player(name));
 
-            // _rng = config is null ? new Random() : new Random(config._seed);
-            _rng = new Random();
+            _rng = new Random(seed);
             _choosenCategoryName = null;
             _categories = new List<string>
             {
@@ -191,19 +190,21 @@ namespace Trivia
 
         public void WrongAnswer()
         {
-            _prisoners.Enqueue(CurrentPlayer);
+            if (_maxAmountOfPrisoners != 0)
+                _prisoners.Enqueue(CurrentPlayer);
 
             CurrentPlayer.InPenaltyBox = true;
             CurrentPlayer.WinStreak = 1;
             WrongAnswerText();
 
-            if (_prisoners.Count > _maxAmountOfPrisoners)
-            {
-                Player prisoner = _prisoners.Dequeue();
-                prisoner.InPenaltyBox = false;
-                prisoner.WinStreak = 1;
-                Console.WriteLine($"prison is full : {prisoner} is getting out of penalty box");
-            }
+            if (_maxAmountOfPrisoners != 0)
+                if (_prisoners.Count > _maxAmountOfPrisoners)
+                {
+                    Player prisoner = _prisoners.Dequeue();
+                    prisoner.InPenaltyBox = false;
+                    prisoner.WinStreak = 1;
+                    Console.WriteLine($"prison is full : {prisoner} is getting out of penalty box");
+                }
 
             _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
