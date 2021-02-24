@@ -20,7 +20,19 @@ namespace Trivia
                 if (!(possibleAnswers[answer] is null))                
                     possibleAnswers[answer]();
         }
-        
+
+        public static int AskForNumber()
+        {
+            string answer;
+            int result;
+            do
+            {
+                Console.WriteLine("Quelle est la valeur à atteindre pour gagner ?");
+                answer = Console.ReadLine();
+            } while (answer is null || !(Int32.TryParse(answer, out result) && result >= 6));
+            return result;
+        }
+
         public static void AskSucces(bool succes, Action trueAction, Action falseAction)
         {
             if (succes)

@@ -7,10 +7,12 @@ namespace Trivia
      public class Game
     {
         private int PlayersCount => _players.Count;
+
+        private int CoinsToWin;
         private Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
         private string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == 6);
+        public bool HaveAWinner => _players.Exists(player => player.Coins == CoinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -31,6 +33,8 @@ namespace Trivia
                     questions.Enqueue(CreateQuestion(i, category));
                 _questionsCategory.Add(category, questions);
             }
+
+            CoinsToWin = InputUtilities.AskForNumber();
         }
 
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
