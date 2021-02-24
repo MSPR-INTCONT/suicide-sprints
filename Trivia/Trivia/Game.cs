@@ -8,24 +8,19 @@ namespace Trivia
     {
         private int PlayersCount => _players.Count;
 
-        private int CoinsToWin;
         private Player CurrentPlayer => _players[_currentPlayerIndex];
 
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
-<<<<<<< HEAD
-        private string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == CoinsToWin);
-=======
-
         private string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == 6);
->>>>>>> de532ee0cbe9c148441bf4f70c3436af3f181dbe
+        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
         private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
+        private readonly int _coinsToWin;
+
 
         public Game(bool useTechnoQuestion)
         {
@@ -43,7 +38,7 @@ namespace Trivia
                 _questionsCategory.Add(category, questions);
             }
 
-            CoinsToWin = InputUtilities.AskForNumber();
+            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
         }
 
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";

@@ -14,7 +14,7 @@ namespace Trivia
             string answer;
             do
             {
-                Console.WriteLine($"Questions : {question}\r\nAccepted Answers :{answerConcat}");
+                Console.WriteLine($"Question : {question}\r\nAccepted Answers :{answerConcat}");
                 answer = Console.ReadLine();
             } while (answer is null || !possibleAnswers.ContainsKey(answer));
 
@@ -22,15 +22,16 @@ namespace Trivia
                 possibleAnswers[answer]();
         }
 
-        public static int AskForNumber()
+        public static int AskForNumber(string question, int minValue)
         {
             string answer;
             int result;
             do
             {
-                Console.WriteLine("Quelle est la valeur à atteindre pour gagner ?");
+                Console.WriteLine($"Question : {question}\r\nAccepted Answers : (>={minValue})");
                 answer = Console.ReadLine();
-            } while (answer is null || !(Int32.TryParse(answer, out result) && result >= 6));
+            } while (answer is null || !(Int32.TryParse(answer, out  result) && result >= minValue));
+
             return result;
         }
 
