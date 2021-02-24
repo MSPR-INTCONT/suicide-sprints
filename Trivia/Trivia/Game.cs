@@ -8,11 +8,10 @@ namespace Trivia
     {
         private int PlayersCount => _players.Count;
 
-        private Player CurrentPlayer => _players[_currentPlayerIndex];
-
+        public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
-        private string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins >= _coinsToWin);
+        public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
+        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -79,7 +78,7 @@ namespace Trivia
             return true;
         }
 
-        private void Roll(int roll)
+        public void Roll(int roll)
         {
             RollText(roll);
             CurrentPlayer.Place = (CurrentPlayer.Place + roll) % 12;
@@ -135,6 +134,7 @@ namespace Trivia
             WrongAnswerText();
             _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
+
 
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
