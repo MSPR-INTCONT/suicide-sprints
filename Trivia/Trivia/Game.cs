@@ -31,6 +31,7 @@ namespace Trivia
 
         private Random _rng;
         private readonly List<Player> _leaderboard = new List<Player>();
+        private readonly Dictionary<string, int> _amountOfQuestionForCategory = new Dictionary<string, int>();
 
         private int _questionIndex;
 
@@ -72,7 +73,10 @@ namespace Trivia
             };
 
             foreach (string category in _categories)
+            {
+                _amountOfQuestionForCategory.Add(category, 0);
                 _questionsCategory.Add(category, new Queue<string>());
+            }
 
             _coinsToWin = coinsToWin;
 
@@ -249,10 +253,13 @@ namespace Trivia
         private void GettingOutOfPenaltyText(bool inPenaltyBox) =>
             Console.WriteLine($"{CurrentPlayer} is {(inPenaltyBox ? "not" : "")} getting out of the penalty box");
 
-        private void NewQuestionText() =>
+        private void NewQuestionText()
+        {
+            _amountOfQuestionForCategory[CurrentCategoryName]++;
             Console.WriteLine($"{CurrentPlayer}'s new location is {CurrentPlayer.Place}\r\n" +
                               $"The category is {CurrentCategoryName}\r\n" +
                               $"{CurrentCategoryQueue.Dequeue()}");
+        }
 
         private void CorrectAnswerText() =>
             Console.WriteLine("Answer was correct!!!!\r\n" +
