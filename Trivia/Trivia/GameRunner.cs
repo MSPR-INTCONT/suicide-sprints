@@ -10,7 +10,7 @@ namespace Trivia
             MakeGame(new List<string>
             {
                 "Cat", "Test"
-            }, 1);
+            }, 89);
         }
 
         private static void MakeGame(List<string> players, int seed)
@@ -42,7 +42,7 @@ namespace Trivia
                 {
                     aGame.TryRoll(DiceRoll());
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(Rng.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        InputUtilities.AskSuccess(Rng.Next(2) == 1, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
                 else if (!aGame.IsPlayable())
                 {
