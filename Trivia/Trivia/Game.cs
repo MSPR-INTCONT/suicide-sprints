@@ -4,37 +4,32 @@ using System.Linq;
 
 namespace Trivia
 {
-    public class Game
+     public class Game
     {
         private int PlayersCount => _players.Count;
-        public bool DidPlayerWin => _purses[_currentPlayerIndex] == 6;
+        private Player CurrentPlayer => _players[_currentPlayerIndex];
+        private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
+        private string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
+        public bool HaveAWinner => _players.Exists(player => player.Coins == 6);
 
-        private readonly List<string> _players = new List<string>();
-
-        private readonly List<int> _places = new List<int>();
-        private readonly List<int> _purses = new List<int>();
-        private readonly List<bool> _inPenaltyBox = new List<bool>();
-    
-        private readonly List<Queue<string>> _questionsCategory = new List<Queue<string>>();
-
+        private readonly List<string> _categories;
+        private readonly List<Player> _players = new List<Player>();
+        private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
         private int _currentPlayerIndex;
-        private bool _isGettingOutOfPenaltyBox;
 
         public Game(bool useTechnoQuestion)
         {
-            List<string> categories = new List<string>
+            _categories = new List<string>
             {
                 "Pop", "Science", "Sports", useTechnoQuestion ? "Techno" : "Rock"
             };
-            
-            for (int i = 0; i < 4; i++)
-                _questionsCategory.Add(new Queue<string>());
-            for (int i = 0; i < 50; i++)
+
+            foreach (string category in _categories)
             {
-                _questionsCategory[0].Enqueue(CreateQuestion(i,categories[0]));
-                _questionsCategory[1].Enqueue(CreateQuestion(i,categories[1]));
-                _questionsCategory[2].Enqueue(CreateQuestion(i,categories[2]));
-                _questionsCategory[3].Enqueue(CreateQuestion(i,categories[3]));
+                Queue<string> questions = new Queue<string>();
+                for (int i = 0; i < 50; i++)
+                    questions.Enqueue(CreateQuestion(i, category));
+                _questionsCategory.Add(category, questions);
             }
         }
 
@@ -44,19 +39,17 @@ namespace Trivia
 
         public void Add(List<string> playerNames)
         {
-            foreach (string player in playerNames)
+            foreach (string name in playerNames)
             {
-                _places.Insert(PlayersCount, 0);
-                _purses.Insert(PlayersCount, 0);
-                _inPenaltyBox.Insert(PlayersCount, false);
-                _players.Add(player);
-                NewPlayerAddedText(player);
+                _players.Add(new Player(name));
+                NewPlayerAddedText(name);
             }
         }
 
-        public void Roll(int roll)
+        public void StartTurn()
         {
-            StartTurnText(roll);
+            StartTurnText();
+        }
 
         public void TryRoll(int roll)
         {
@@ -121,25 +114,17 @@ namespace Trivia
 
         public void CorrectAnswer()
         {
-            if (!_inPenaltyBox[_currentPlayerIndex] || _isGettingOutOfPenaltyBox)
-            {
-                _purses[_currentPlayerIndex]++;
-                CorrectAnswerText();
-            }
-
-            SelectNextPlayer();
+            CurrentPlayer.Coins++;
+            CorrectAnswerText();
         }
 
         public void WrongAnswer()
         {
+            CurrentPlayer.InPenaltyBox = true;
             WrongAnswerText();
-
-            _inPenaltyBox[_currentPlayerIndex] = true;
-
-            SelectNextPlayer();
         }
 
-        private void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+        public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
         private void NewPlayerAddedText(string player) =>
             Console.WriteLine($"{player} was added\r\n" +
