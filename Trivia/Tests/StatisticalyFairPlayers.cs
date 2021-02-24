@@ -17,7 +17,7 @@ namespace Tests
                 "Alex", "Gab", "Nico"
             };            
             Random rand = new Random();
-            Game game = new Game(true, rand);
+            Game game = new Game();
             game.Add(players);
             int numberQuestion = 50000;
             for (int i = 0; i < numberQuestion * players.Count; i++)
