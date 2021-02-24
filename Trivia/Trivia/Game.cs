@@ -37,7 +37,7 @@ namespace Trivia
             }
         }
 
-        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate = 50)
+        public Game(bool useTechnoQuestion, Random rng)
         {
             _rng = rng;
             _choosenCategoryName = null;
@@ -47,12 +47,7 @@ namespace Trivia
             };
 
             foreach (string category in _categories)
-            {
-                Queue<string> questions = new Queue<string>();
-                for (int i = 0; i < amountOfQuestionToGenerate; i++)
-                    questions.Enqueue(CreateQuestion(QuestionIndex, category));
-                _questionsCategory.Add(category, questions);
-            }
+                _questionsCategory.Add(category, new Queue<string>());
 
             _coinsToWin = 6;
         }
@@ -74,10 +69,9 @@ namespace Trivia
         {
             if (!CanPlay()) return;
             Roll(roll);
-            if(CurrentCategoryQueue.Count == 0)
+            if (CurrentCategoryQueue.Count == 0)
                 CurrentCategoryQueue.Enqueue(CreateQuestion(QuestionIndex, CurrentCategoryName));
             NewQuestionText();
-            CurrentCategoryQueue.Dequeue();
             _choosenCategoryName = null;
         }
 
@@ -139,7 +133,7 @@ namespace Trivia
 
         public void AskGoldNumberToWin()
         {
-            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
+            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 1);
         }
 
         public void CorrectAnswer()
@@ -213,7 +207,8 @@ namespace Trivia
 
         private void NewQuestionText() =>
             Console.WriteLine($"{CurrentPlayer}'s new location is {CurrentPlayer.Place}\r\n" +
-                              $"The category is {CurrentCategoryName}\r\n");
+                              $"The category is {CurrentCategoryName}\r\n" +
+                              $"{CurrentCategoryQueue.Dequeue()}");
 
         private void CorrectAnswerText() =>
             Console.WriteLine("Answer was correct!!!!\r\n" +

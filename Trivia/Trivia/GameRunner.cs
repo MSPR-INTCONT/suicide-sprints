@@ -9,7 +9,7 @@ namespace Trivia
         {
             MakeGame(new List<string>
             {
-                "Cat", "Test"
+                "Cat", "Test", "AZ", "J"
             }, 89);
         }
 
@@ -25,7 +25,7 @@ namespace Trivia
                 {"no", () => isTechno = false}
             });
 
-            Game aGame = new Game(isTechno,rng, 50);
+            Game aGame = new Game(isTechno,rng);
             aGame.AskGoldNumberToWin();
             aGame.Add(players);
     
