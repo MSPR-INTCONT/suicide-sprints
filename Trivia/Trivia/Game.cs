@@ -19,7 +19,7 @@ namespace Trivia
         private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
-        private readonly int _coinsToWin;
+        private int _coinsToWin;
         private readonly Random _rng;
         private readonly List<Player> leaderboard = new List<Player>();
 
@@ -41,9 +41,9 @@ namespace Trivia
                 _questionsCategory.Add(category, questions);
             }
 
-            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
+            _coinsToWin = 6;
         }
-
+        
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
 
         public bool IsPlayable() => PlayersCount >= 2 && PlayersCount <= 6;
@@ -123,6 +123,11 @@ namespace Trivia
                 {"no", null}
             });
             return useJoker;
+        }
+
+        public void AskGoldNumberToWin()
+        {
+            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
         }
 
         public void CorrectAnswer()

@@ -26,8 +26,9 @@ namespace Trivia
             });
 
             Game aGame = new Game(isTechno,rng);
+            aGame.AskGoldNumberToWin();
             aGame.Add(players);
-
+    
 
             if (!aGame.IsPlayable())
             {
@@ -42,7 +43,7 @@ namespace Trivia
                 {
                     aGame.TryRoll(DiceRoll());
                     if (!aGame.AskForJokerUse())
-                        InputUtilities.AskSuccess(rng.Next(2) == 1, aGame.CorrectAnswer, aGame.WrongAnswer);
+                        InputUtilities.AskSuccess(true, aGame.CorrectAnswer, aGame.WrongAnswer);
                 }
                 else if (!aGame.IsPlayable())
                 {
