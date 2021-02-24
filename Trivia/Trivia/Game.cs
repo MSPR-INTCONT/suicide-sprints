@@ -19,8 +19,7 @@ namespace Trivia
         private int _currentPlayerIndex;
         private string _choosenCategoryName;
         private int _coinsToWin;
-
-
+        
         public Game(bool useTechnoQuestion)
         {
             _choosenCategoryName = null;
@@ -53,16 +52,12 @@ namespace Trivia
             }
         }
 
-        public void StartTurn()
-        {
-            StartTurnText();
-        }
-
         public void TryRoll(int roll)
         {
             if (!CanPlay(roll)) return;
             Roll(roll);
             NewQuestionText();
+            CurrentCategoryQueue.Dequeue();
             _choosenCategoryName = null;
         }
 
@@ -147,7 +142,7 @@ namespace Trivia
             Console.WriteLine($"{player} was added\r\n" +
                               $"They are player number {PlayersCount}");
 
-        private void StartTurnText() =>
+        public void StartTurnText() =>
             Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
@@ -157,8 +152,7 @@ namespace Trivia
 
         private void NewQuestionText() =>
             Console.WriteLine($"{CurrentPlayer}'s new location is {CurrentPlayer.Place}\r\n" +
-                              $"The category is {CurrentCategoryName}\r\n" +
-                              $"{CurrentCategoryQueue.Dequeue()}");
+                              $"The category is {CurrentCategoryName}\r\n");
 
         private void CorrectAnswerText() =>
             Console.WriteLine("Answer was correct!!!!\r\n" +
