@@ -25,7 +25,7 @@ namespace Trivia
                 {"no", () => isTechno = false}
             });
 
-            Game aGame = new Game(isTechno,rng);
+            Game aGame = new Game(isTechno,rng, 50);
             aGame.AskGoldNumberToWin();
             aGame.Add(players);
     
@@ -52,7 +52,7 @@ namespace Trivia
                 }
 
                 aGame.SelectNextPlayer();
-            } while (!aGame.HaveAWinner);
+            } while (!aGame.IsGameOver);
         }
     }
 }

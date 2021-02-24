@@ -12,7 +12,7 @@ namespace Trivia
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
 
         public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
+        public bool IsGameOver => _players.Exists(player => player.Coins == _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
@@ -21,10 +21,20 @@ namespace Trivia
         private string _choosenCategoryName;
         private int _coinsToWin;
         private readonly Random _rng;
-        private readonly List<Player> leaderboard = new List<Player>();
+        private readonly List<Player> _leaderboard = new List<Player>();
 
+        private int _questionIndex;
 
-        public Game(bool useTechnoQuestion, Random rng)
+        private int QuestionIndex
+        {
+            get
+            {
+                _questionIndex++;
+                return _questionIndex;
+            }
+        }
+
+        public Game(bool useTechnoQuestion, Random rng, int amountOfQuestionToGenerate)
         {
             _rng = rng;
             _choosenCategoryName = null;
@@ -36,8 +46,8 @@ namespace Trivia
             foreach (string category in _categories)
             {
                 Queue<string> questions = new Queue<string>();
-                for (int i = 0; i < 50; i++)
-                    questions.Enqueue(CreateQuestion(i, category));
+                for (int i = 0; i < amountOfQuestionToGenerate; i++)
+                    questions.Enqueue(CreateQuestion(QuestionIndex, category));
                 _questionsCategory.Add(category, questions);
             }
 
@@ -66,6 +76,8 @@ namespace Trivia
         {
             if (!CanPlay()) return;
             Roll(roll);
+            if(CurrentCategoryQueue.Count == 0)
+                CurrentCategoryQueue.Enqueue(CreateQuestion(QuestionIndex, CurrentCategoryName));
             NewQuestionText();
             _choosenCategoryName = null;
         }
@@ -134,6 +146,7 @@ namespace Trivia
         {
             CurrentPlayer.Coins += CurrentPlayer.WinStreak;
             CurrentPlayer.WinStreak++;
+            
             CorrectAnswerText();
         }
 
