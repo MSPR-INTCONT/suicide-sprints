@@ -14,12 +14,25 @@ namespace Trivia
             string answer;
             do
             {
-                Console.WriteLine($"Questions : {question}\r\nAccepted Answers :{answerConcat}");
+                Console.WriteLine($"Question : {question}\r\nAccepted Answers :{answerConcat}");
                 answer = Console.ReadLine();
             } while (answer is null || !possibleAnswers.ContainsKey(answer));
 
             if (!(possibleAnswers[answer] is null))
                 possibleAnswers[answer]();
+        }
+
+        public static int AskForNumber(string question, int minValue)
+        {
+            string answer;
+            int result;
+            do
+            {
+                Console.WriteLine($"Question : {question}\r\nAccepted Answers : (>={minValue})");
+                answer = Console.ReadLine();
+            } while (answer is null || !(Int32.TryParse(answer, out  result) && result >= minValue));
+
+            return result;
         }
 
         public static void AskSuccess(bool success, Action trueAction, Action falseAction)
@@ -31,6 +44,21 @@ namespace Trivia
             }
 
             trueAction();
+        }
+
+        public static string AskChoices(string question, List<string> choices)
+        {
+            string answerConcat = String.Empty;
+            foreach (string choice in choices)
+                answerConcat += $" ({choice})";
+            string answer;
+            do
+            {
+                Console.WriteLine($"Questions : {question}\r\nAccepted Answers :{answerConcat}");
+                answer = Console.ReadLine();
+            } while (answer is null || !choices.Contains(answer));
+
+            return answer;
         }
     }
 }

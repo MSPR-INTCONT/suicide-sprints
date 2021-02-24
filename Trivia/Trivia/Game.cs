@@ -4,21 +4,26 @@ using System.Linq;
 
 namespace Trivia
 {
-     public class Game
+    public class Game
     {
         private int PlayersCount => _players.Count;
+
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         private Queue<string> CurrentCategoryQueue => _questionsCategory[CurrentCategoryName];
-        public string CurrentCategoryName => _categories[CurrentPlayer.Place % 4];
-        public bool HaveAWinner => _players.Exists(player => player.Coins == 6);
+        public string CurrentCategoryName => _choosenCategoryName ?? _categories[CurrentPlayer.Place % 4];
+        public bool HaveAWinner => _players.Exists(player => player.Coins == _coinsToWin);
 
         private readonly List<string> _categories;
         private readonly List<Player> _players = new List<Player>();
         private readonly Dictionary<string, Queue<string>> _questionsCategory = new Dictionary<string, Queue<string>>();
         private int _currentPlayerIndex;
+        private string _choosenCategoryName;
+        private readonly int _coinsToWin;
+
 
         public Game(bool useTechnoQuestion)
         {
+            _choosenCategoryName = null;
             _categories = new List<string>
             {
                 "Pop", "Science", "Sports", useTechnoQuestion ? "Techno" : "Rock"
@@ -31,6 +36,8 @@ namespace Trivia
                     questions.Enqueue(CreateQuestion(i, category));
                 _questionsCategory.Add(category, questions);
             }
+
+            _coinsToWin = InputUtilities.AskForNumber("How much coins to win ?", 6);
         }
 
         private string CreateQuestion(int index, string questionType) => $"{questionType} Question {index}";
@@ -56,6 +63,7 @@ namespace Trivia
             if (!CanPlay(roll)) return;
             Roll(roll);
             NewQuestionText();
+            _choosenCategoryName = null;
         }
 
         private bool CanPlay(int roll)
@@ -74,7 +82,7 @@ namespace Trivia
         {
             RollText(roll);
             CurrentPlayer.Place = (CurrentPlayer.Place + roll) % 12;
-        } 
+        }
 
         public bool AskIfPlayerWantToLeaveGame()
         {
@@ -114,38 +122,19 @@ namespace Trivia
 
         public void CorrectAnswer()
         {
-            CurrentPlayer.Coins++;
+            CurrentPlayer.Coins += CurrentPlayer.WinStreak;
+            CurrentPlayer.WinStreak++;
             CorrectAnswerText();
         }
 
         public void WrongAnswer()
         {
             CurrentPlayer.InPenaltyBox = true;
+            CurrentPlayer.WinStreak = 1;
             WrongAnswerText();
+            _choosenCategoryName = InputUtilities.AskChoices("Select question category for next player", _categories);
         }
-
-
-        public void Run()
-        {
-            Random rand = new Random();
-            do
-            {
-                StartTurn();
-                if (!AskIfPlayerWantToLeaveGame())
-                {
-                    TryRoll(rand.Next(5) + 1);
-                    if (AskForJokerUse())
-                        InputUtilities.AskSuccess(rand.Next(9) == 7, CorrectAnswer, WrongAnswer);
-                }
-                else if (!IsPlayable())
-                {
-                    Console.WriteLine("Game Can't be played anymore");
-                    return;
-                }
-
-                SelectNextPlayer();
-            } while (!HaveAWinner);
-        }
+        
         
         public void SelectNextPlayer() => _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
@@ -154,7 +143,7 @@ namespace Trivia
                               $"They are player number {PlayersCount}");
 
         private void StartTurnText() =>
-            Console.WriteLine($"{CurrentPlayer} is the current player");
+            Console.WriteLine($"\n\n{CurrentPlayer} is the current player");
 
         private void RollText(int roll) => Console.WriteLine($"They have rolled a {roll}");
 
