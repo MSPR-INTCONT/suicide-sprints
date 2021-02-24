@@ -7,7 +7,6 @@ namespace Trivia
     {
         public static void Main(string[] args)
         {
-
             bool isTechno = false;
             InputUtilities.AskQuestion("Replace Rock questions by Techno questions ?", new Dictionary<string, Action>
             {
@@ -32,26 +31,20 @@ namespace Trivia
 
             do
             {
-                if (!aGame.IsPlayable())
-                {
-                    Console.WriteLine("Game Can't be played anymore");
-                    return;
-                }
                 aGame.StartTurn();
                 if (!aGame.AskIfPlayerWantToLeaveGame())
                 {
                     aGame.TryRoll(rand.Next(5) + 1);
                     if (!aGame.AskForJokerUse())
-                    {
-                        if (rand.Next(9) == 7)
-                            aGame.WrongAnswer();
-                        else
-                            aGame.CorrectAnswer();
-                    }
+                        InputUtilities.AskSuccess(rand.Next(9) == 7, aGame.CorrectAnswer, aGame.WrongAnswer);
+                }
+                else if (!aGame.IsPlayable())
+                {
+                    Console.WriteLine("Game Can't be played anymore");
+                    return;
                 }
 
                 aGame.SelectNextPlayer();
-                
             } while (!aGame.HaveAWinner);
         }
     }
